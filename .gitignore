@@ -301,5 +301,5 @@ TSWLatexianTemp*
 #*Notes.bib
 
 # excluded pdfs
-!./v0.0.1 (2023-09-27)/minimalthesis_23-10-alpha_getting-started_fancy-colorful_sans-serif_v0.pdf
-!./v0.0.1 (2023-09-27)/minimalthesis_23-10-alpha_getting-started_plain_serif_v0.pdf
+!./minimalthesis_23-10-alpha_getting-started_fancy-colorful_sans-serif_v0.pdf
+!./minimalthesis_23-10-alpha_getting-started_plain_serif_v0.pdf
