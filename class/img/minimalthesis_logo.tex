@@ -1,9 +1,59 @@
 \documentclass{standalone}
 
 \usepackage{tikz}
+\usetikzlibrary{shadings,shapes,positioning,calc,patterns}
+\usetikzlibrary{
+	decorations.pathmorphing,
+	decorations.pathreplacing,
+	decorations.shapes,
+	decorations.text,
+}
+
+% source: https://tex.stackexchange.com/questions/66216/draw-arc-in-tikz-when-center-of-circle-is-specified
+\def\centerarc[#1](#2)(#3:#4:#5)% Syntax: [draw options] (center) (initial angle:final angle:radius)
+{ \draw[#1] ($(#2)+({#5*cos(#3)},{#5*sin(#3)})$) arc (#3:#4:#5); }
+
+\def\scale{0.55}
+
+% source of typewriter image: https://openclipart.org/detail/322953/typewriter, License: CC0
 
 \begin{document}
 	\begin{tikzpicture}
-		\node[fill=cyan, circle, minimum width=8cm, text=white, align=center, font=\Huge]at(0,0){$<min>$\\Thesis};
+		% old variant
+%		\node[fill=cyan, circle, minimum width=8cm, text=white, align=center, font=\Huge]at(0,0){$<min>$\\Thesis};
+
+		% new variant
+		% outer background ring
+		\path[fill=cyan, even odd rule](0,0)circle(\scale*5.7cm)(0,0)circle(\scale*4.125cm);
+		
+		% typewriter with filled inner background circle
+		\node at (0,0){
+			\includegraphics[width=4.4 cm]{typewriter_openclipart_edited.pdf}
+		};
+		
+		% curved text top
+		\centerarc[
+			decoration = {
+				text along path,
+				text = {|\Huge\bfseries\sffamily\color{white}|MINIMAL},
+				text align = center, raise=-\scale* 0.7 cm
+			}, 
+			decorate
+			%% for debug only
+%			draw=black,
+%			postaction={decorate}
+		](0,0)(180:0:\scale*5 cm);
+		
+		% curved text bottom
+		\centerarc[
+			decoration={text along path, text align = center,
+				text={|\Huge\bfseries\sffamily\color{white}|THESIS}, raise=-0.225cm
+			},
+			decorate
+			%% for debug only
+%			draw=black,
+	%		postaction={decorate}
+		](0,0)(-145:-35:\scale*5 cm)
+		
 	\end{tikzpicture}
 \end{document}
