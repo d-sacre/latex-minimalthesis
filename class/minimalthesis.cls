@@ -42,21 +42,74 @@
     headsepline,
 ]{scrreprt}
 
-\RequirePackage{pgfkeys,etoolbox,ragged2e}
+\RequirePackage{pgfkeys,ifthen}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% only for testing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand*\mt@title{}
-\newcommand*\mt@titleformat{}
+% \newcommand*\mt@title{}
+% \newcommand*\mt@titleformat{}
+
+% \pgfkeys{
+%     /mt/.cd,
+%     author/name/.store in = \mt@title,
+%     author/place of birth/.store in = \mt@titleformat
+% }
+
+% \newcommand*\setup[1]{\pgfqkeys{/mt}{#1}}
+
+% \newcommand{\testtitle}{{\mt@titleformat\mt@title}}
+
+% source: https://tex.stackexchange.com/questions/700759/pgfkeys-is-it-possible-to-achieve-a-dictionary-like-input-method-for-subkeys
+
+% should allow for two user input possibilities:
+% \setup{
+% 	author/name=ABC, 
+% 	author/place of birth=DEF
+% }
+
+% \setup{
+%     author = {
+%         name = ABC,
+%         place of birth = DEF
+%     }
+% }
+
+% \ExplSyntaxOn
+%     \keys_define:nn{mt}
+%     {
+%         author .code:n = {\keys_set:nn {mt/author}{#1}},
+%         author / name .tl_set:N = \l_mt_author_name,
+%         author / place~of~birth .tl_set:N = \l_mt_author_birth,
+%     }
+
+%     \newcommand{\test}{%
+%         \l_mt_author_name,~ %
+%         \l_mt_author_birth%
+%     }
+
+%     \newcommand*\setup[1]{\keys_set:nn{mt}{#1}}
+% \ExplSyntaxOff
 
 \pgfkeys{
     /mt/.cd,
-    author/name/.store in = \mt@title,
-    author/place of birth/.store in = \mt@titleformat
+    author/.code={\pgfqkeys{/mt/author}{#1}},
+        author/name/.initial,
+        author/place of birth/.initial,
+    title/.initial,
+    subtitle/.initial,
+    pdfmetadata/.code={\pgfqkeys{/mt/pdfmetadata}{#1}},
+        pdfmetadata/title/.initial,
+        pdfmetadata/subject/.initial = {Academic Thesis},
+        pdfmetadata/author/.initial  = \pgfkeysvalueof{/mt/author/name},
+        pdfmetadata/keywords/.initial = {Academic Thesis},
+        pdfmetadata/creator/.initial = {LaTeX with minimalthesis v0.0.2-alpha and hyperref}
 }
 
 \newcommand*\setup[1]{\pgfqkeys{/mt}{#1}}
 
-\newcommand{\testtitle}{{\mt@titleformat\mt@title}}
+\newcommand{\test}{%
+    \pgfkeysvalueof{/mt/author/name}, %
+    \pgfkeysvalueof{/mt/author/place of birth}%
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage[english]{babel}
@@ -124,9 +177,9 @@
 %usepackages related to graphics
 \RequirePackage[dvipsnames]{xcolor}
 \RequirePackage{graphicx}
-\RequirePackage{tikz}
 \RequirePackage{wrapfig}
 
+\RequirePackage{tikz}
 \usetikzlibrary{calc,arrows, intersections,arrows.meta}
 \usetikzlibrary{shapes.arrows,shapes.geometric,decorations.markings,positioning}
 \usetikzlibrary{spy}
@@ -140,32 +193,22 @@
 \RequirePackage{physics} % derivative, differentials
 \RequirePackage{derivative}
 \RequirePackage{harpoon} %provides \overrightharp
+
+% plotting
 \RequirePackage{tikz-3dplot}
-
-
 \RequirePackage{pgfplots}
 \pgfplotsset{compat=1.18}
 \RequirePackage{pgfplotstable}
 \usepgfplotslibrary{fillbetween,groupplots}
 
-
 \usepgfplotslibrary{external}
 \tikzexternalize[prefix=tikzexternalize/]
 
-%\pgfplotsset{
-%    legend image with text/.style={
-%        legend image code/.code={%
-%            \node[anchor=center] at (0.3cm,0cm) {#1};
-%        }
-%    },
-%}
-
-\RequirePackage{blindtext}
 \RequirePackage{listings}
-
 \RequirePackage[labelfont={bf}]{caption}
 \captionsetup{format=plain,labelformat=simple,font=small,labelsep = colon}
 
+% Tables
 \RequirePackage{tabulary}
 \RequirePackage{multirow,makecell,cellspace}
 \RequirePackage{multicol}
@@ -191,3 +234,49 @@
 % \ExecuteBibliographyOptions{thesistitle}
 
 \RequirePackage[hidelinks]{hyperref}
+
+% macro definition
+\makeatletter
+\newcommand{\@mt@LogoTitlepage}{
+	\vspace{0.5cm}
+	\includegraphics{./class/img/minimalthesis_logo.pdf}
+	\vspace{0.5cm}
+}
+\makeatother
+
+\newcommand{\mtTOC}{
+	\newgeometry{left=3cm,right=2.5cm,top=2.75cm,bottom=2.75cm}
+	{
+		\renewcommand{\rightorleftmark}{appendix}
+		\tableofcontents
+	}
+	
+	\newgeometry{twoside,outer=2.5cm,inner=3.5cm,top=2cm,bottom=2cm,includeheadfoot}
+	\newpage\null\thispagestyle{empty}
+}
+
+% Setting up document after user settings are available
+% setting up the pdf meta data
+\AddToHook{begindocument/end}{
+    % create pdf title; if no specific pdf title is specified by the user, use thesis title and subtitle.
+    % If no thesis subtitle is specified, use only thesis title
+    \ifthenelse{\equal{\pgfkeysvalueof{/mt/pdfmetadata/title}}{}}{% if pdf title key is not set by user to a specific value
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/subtitle}}{}}{
+            \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/title}}
+        }{
+            \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/title}~–~\pgfkeysvalueof{/mt/subtitle}}
+        }
+    }{%
+        % pdf title key is specified by user
+        % nothing to do 
+    }
+
+    % setting the pdf metadata
+    \hypersetup{
+        pdftitle={\pgfkeysvalueof{/mt/pdfmetadata/title}},
+        pdfsubject={\pgfkeysvalueof{/mt/pdfmetadata/subject}},
+        pdfauthor={\pgfkeysvalueof{/mt/pdfmetadata/author}},
+        pdfkeywords={\pgfkeysvalueof{/mt/pdfmetadata/keywords}},
+        pdfcreator={\pgfkeysvalueof{/mt/pdfmetadata/creator}}
+    }
+}
