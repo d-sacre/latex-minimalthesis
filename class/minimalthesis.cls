@@ -67,25 +67,30 @@
     % macros for storing titlepage subtitle data
     \newcommand{\@mt@titlepage@subtitle@font@weight}{\bfseries}
 
+    % macros for storing titlepage author data
+    \newcommand{\@mt@titlepage@author@font@weight}{}
+
     \pgfkeys{%
         /handlers/.is setter/.code=\pgfkeysedef{\pgfkeyscurrentpath}{%
             \noexpand\pgfqkeys{\pgfkeyscurrentpath}{##1}%
         },%
         /mt/.cd,%
-        title/.initial,%
-        subtitle/.initial,%
-        author/.is setter,
-            author/name/.initial,
-            author/place of birth/.initial,
+        thesis/.is setter,
+            thesis/title/.initial,%
+            thesis/subtitle/.initial,%
+            thesis/author/.is setter,
+                thesis/author/name/.initial,
+                thesis/author/place of birth/.initial,
+            thesis/type/.initial,
         pdfmetadata/.is setter,
             pdfmetadata/title/.initial,
             pdfmetadata/subject/.initial = {Academic Thesis},
-            pdfmetadata/author/.initial  = \pgfkeysvalueof{/mt/author/name},
+            pdfmetadata/author/.initial  = \pgfkeysvalueof{/mt/thesis/author/name},
             pdfmetadata/keywords/.initial = {Academic Thesis},
             pdfmetadata/creator/.initial = {LaTeX with minimalthesis v0.0.2-alpha and hyperref},
         titlepage/.is setter,
             titlepage/title/.is setter,
-                titlepage/title/text/.initial = \pgfkeysvalueof{/mt/title},
+                titlepage/title/text/.initial = \pgfkeysvalueof{/mt/thesis/title},
                 titlepage/title/font/.is setter,
                     titlepage/title/font/family/.initial = \sffamily,
                     titlepage/title/font/size/.initial = \Huge,
@@ -99,7 +104,7 @@
                     \pgfkeysvalueof{/mt/titlepage/title/text}%
                 },
             titlepage/subtitle/.is setter,
-                titlepage/subtitle/text/.initial = \pgfkeysvalueof{/mt/subtitle},
+                titlepage/subtitle/text/.initial = \pgfkeysvalueof{/mt/thesis/subtitle},
                 titlepage/subtitle/font/.is setter,
                     titlepage/subtitle/font/family/.initial = \normalfont,
                     titlepage/subtitle/font/size/.initial = \huge,
@@ -153,7 +158,21 @@
                     }%
                     \vspace{0.5cm}
                 }{unrecognized type}%
-            }%
+            },%
+            titlepage/author/.is setter,% 
+                titlepage/author/text/.initial = \pgfkeysvalueof{/mt/thesis/author/name},
+                titlepage/author/font/.is setter,
+                    titlepage/author/font/family/.initial = \scshape, % needs to be changed if main document font is set to sans serif
+                    titlepage/author/font/size/.initial = \Large,
+                    titlepage/author/font/weight/.store in = \@mt@titlepage@author@font@weight,
+                    titlepage/author/font/color/.initial = black,
+                titlepage/author/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/author/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/author/font/size}%
+                    \@mt@titlepage@author@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/author/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/author/text}%
+            },
     }
 
     % \newcommand*\@mt@pgfkeys@setup@TEMPLATE[2]{\pgfqkeys{#1}{#2}}
@@ -321,6 +340,7 @@
 		% {\enquote{\usekomavar{mt::thesis:legal-type-identifier}}\vfil}
 		% {\usekomavar*{mt::handed-in-by} \usekomavar{mt::handed-in-by}\\}
 		% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        {\pgfkeysvalueof{/mt/titlepage/author/@formated}} % \\[0.125cm]
 		% % if sans-serif font selected
 		% \usekomavar[\ifstr]{mt::font}{sans-serif}{%
 		% 	% if default author format string is \Large\scshape:
@@ -353,8 +373,7 @@
 		% {\usekomavar{mt::date}\\}
 		% \vfill
 		% \mtIfKomavarNotEmptyWithoutOption{mt::examination-committee}
-		% \normalsize
-	
+		\normalsize\normalfont % set font to document default to prevent any issues futher along
 	\end{titlepage}
 	
 	\newpage\null\thispagestyle{empty}
