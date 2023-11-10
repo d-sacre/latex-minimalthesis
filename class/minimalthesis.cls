@@ -89,22 +89,99 @@
 %     \newcommand*\setup[1]{\keys_set:nn{mt}{#1}}
 % \ExplSyntaxOff
 
-\pgfkeys{
-    /mt/.cd,
-    author/.code={\pgfqkeys{/mt/author}{#1}},
-        author/name/.initial,
-        author/place of birth/.initial,
-    title/.initial,
-    subtitle/.initial,
-    pdfmetadata/.code={\pgfqkeys{/mt/pdfmetadata}{#1}},
-        pdfmetadata/title/.initial,
-        pdfmetadata/subject/.initial = {Academic Thesis},
-        pdfmetadata/author/.initial  = \pgfkeysvalueof{/mt/author/name},
-        pdfmetadata/keywords/.initial = {Academic Thesis},
-        pdfmetadata/creator/.initial = {LaTeX with minimalthesis v0.0.2-alpha and hyperref}
-}
 
-\newcommand*\setup[1]{\pgfqkeys{/mt}{#1}}
+
+\makeatletter
+    % % macros for storing title data
+    % \newcommand{\@mt@titlepage@title@font@family}{\normalfont}
+    % \newcommand{\@mt@titlepage@title@font@size}{\Huge}
+    \newcommand{\@mt@titlepage@title@font@weight}{\bfseries}
+    % \newcommand{\@mt@titlepage@title@font@color}{black}
+
+    % % macros for storing subtitle data
+    % \newcommand{\@mt@titlepage@subtitle@font@family}{\normalfont}
+    % \newcommand{\@mt@titlepage@subtitle@font@size}{\huge}
+    \newcommand{\@mt@titlepage@subtitle@font@weight}{\bfseries}
+    % \newcommand{\@mt@titlepage@subtitle@font@color}{black}
+
+
+    \pgfkeys{
+        /handlers/.is setter/.code=\pgfkeysedef{\pgfkeyscurrentpath}{%
+            \noexpand\pgfqkeys{\pgfkeyscurrentpath}{##1}%
+        },
+        /mt/.cd,
+        author/.is setter,
+            author/name/.initial,
+            author/place of birth/.initial,
+        title/.initial,
+        subtitle/.initial,
+        pdfmetadata/.is setter,
+            pdfmetadata/title/.initial,
+            pdfmetadata/subject/.initial = {Academic Thesis},
+            pdfmetadata/author/.initial  = \pgfkeysvalueof{/mt/author/name},
+            pdfmetadata/keywords/.initial = {Academic Thesis},
+            pdfmetadata/creator/.initial = {LaTeX with minimalthesis v0.0.2-alpha and hyperref},
+        titlepage/.is setter,
+            titlepage/title/.is setter,
+                titlepage/title/text/.initial = \pgfkeysvalueof{/mt/title},
+                titlepage/title/font/.is setter,
+                    titlepage/title/font/family/.initial = \sffamily,
+                    titlepage/title/font/size/.initial = \Huge,
+                    titlepage/title/font/weight/.store in = \@mt@titlepage@title@font@weight,
+                    titlepage/title/font/color/.initial = black,
+                titlepage/title/@formated/.initial ={
+                    \pgfkeysvalueof{/mt/titlepage/title/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/title/font/size}%
+                    \@mt@titlepage@title@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/title/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/title/text}%
+                },
+            titlepage/subtitle/.is setter,
+                titlepage/subtitle/text/.initial = \pgfkeysvalueof{/mt/subtitle},
+                titlepage/subtitle/font/.is setter,
+                    titlepage/subtitle/font/family/.initial = \normalfont,
+                    titlepage/subtitle/font/size/.initial = \huge,
+                    titlepage/subtitle/font/weight/.store in = \@mt@titlepage@subtitle@font@weight,
+                    titlepage/subtitle/font/color/.initial = black,
+                titlepage/subtitle/@formated/.initial = {
+                    \pgfkeysvalueof{/mt/titlepage/subtitle/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/subtitle/font/size}%
+                    \@mt@titlepage@subtitle@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/subtitle/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/subtitle/text}%
+                },
+            titlepage/logo/@insertable_element/.initial = \@mt@LogoTitlepage,
+        % author/.code={\pgfqkeys{/mt/author}{#1}},
+        %     author/name/.initial,
+        %     author/place of birth/.initial,
+        % title/.initial,
+        % subtitle/.initial,
+        % pdfmetadata/.code={\pgfqkeys{/mt/pdfmetadata}{#1}},
+        %     pdfmetadata/title/.initial,
+        %     pdfmetadata/subject/.initial = {Academic Thesis},
+        %     pdfmetadata/author/.initial  = \pgfkeysvalueof{/mt/author/name},
+        %     pdfmetadata/keywords/.initial = {Academic Thesis},
+        %     pdfmetadata/creator/.initial = {LaTeX with minimalthesis v0.0.2-alpha and hyperref},
+        % titlepage/.code={\pgfqkeys{/mt/titlepage}{#1}},
+        %     % needs to be overhauled for capability to accept dictionary style input
+        %     titlepage/title/text/.initial = \pgfkeysvalueof{/mt/title},
+        %     titlepage/title/font/family/.store in = \@mt@titlepage@title@font@family,
+        %     titlepage/title/font/size/.store in = \@mt@titlepage@title@font@size,
+        %     titlepage/title/font/weight/.store in = \@mt@titlepage@title@font@weight,
+        %     titlepage/title/font/color/.store in = \@mt@titlepage@title@font@color,
+        %     titlepage/subtitle/text/.initial = \pgfkeysvalueof{/mt/subtitle},
+        %     titlepage/subtitle/font/family/.store in = \@mt@titlepage@subtitle@font@family,
+        %     titlepage/subtitle/font/size/.store in = \@mt@titlepage@subtitle@font@size,
+        %     titlepage/subtitle/font/weight/.store in = \@mt@titlepage@subtitle@font@weight,
+        %     titlepage/subtitle/font/color/.store in = \@mt@titlepage@subtitle@font@color,
+        %     titlepage/logo/@insertable_element/.initial = \@mt@LogoTitlepage,
+    }
+
+    \newcommand*\@mt@pgfkeys@setup@TEMPLATE[2]{\pgfqkeys{#1}{#2}}
+    \newcommand*\setup[1]{\@mt@pgfkeys@setup@TEMPLATE{/mt}{#1}} %\pgfqkeys{/mt}{#1}
+\makeatother
+
+
 
 \newcommand{\test}{%
     \pgfkeysvalueof{/mt/author/name}, %
@@ -239,9 +316,86 @@
 \makeatletter
 \newcommand{\@mt@LogoTitlepage}{
 	\vspace{0.5cm}
-	\includegraphics{./class/img/minimalthesis_logo.pdf}
+	\includegraphics[width=12cm]{./class/img/minimalthesis_logo.pdf}
 	\vspace{0.5cm}
 }
+
+\newcommand{\mtTitlepage}{%
+	\newgeometry{twoside,outer=2.5cm,inner=3.5cm,top=2cm,bottom=2cm,includeheadfoot}
+	\begin{titlepage}
+		\centering
+		\vfil
+        { %
+            \pgfkeysvalueof{/mt/titlepage/title/@formated}
+            % \@mt@titlepage@title@font@family%
+            % \@mt@titlepage@title@font@size%
+            % \@mt@titlepage@title@font@weight%
+            % \color{\@mt@titlepage@title@font@color}%
+            % \pgfkeysvalueof{/mt/titlepage/title/text}%
+        }%
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/subtitle/text}}{}}{%
+            % if no subtitle is specified
+            % nothing to do
+        }{%
+            \\
+            \pgfkeysvalueof{/mt/titlepage/subtitle/@formated}
+            % \@mt@titlepage@subtitle@font@family%
+            % \@mt@titlepage@subtitle@font@size%
+            % \@mt@titlepage@subtitle@font@weight%
+            % \color{\@mt@titlepage@subtitle@font@color}%
+            % \pgfkeysvalueof{/mt/titlepage/subtitle/text}%
+        }
+		\vfill
+		\ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/logo/@insertable_element}}{}}{%
+            % if no logo is specified
+            % nothing to do
+        }{%
+			\pgfkeysvalueof{/mt/titlepage/logo/@insertable_element}\\
+			\vfill
+		}
+		% {\usekomavar*{mt::thesis::type}\usekomavar{mt::thesis::type}\\}
+		% {\large \usekomavar*{mt::thesis:legal-type-identifier}\\}
+		% {\enquote{\usekomavar{mt::thesis:legal-type-identifier}}\vfil}
+		% {\usekomavar*{mt::handed-in-by} \usekomavar{mt::handed-in-by}\\}
+		% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		% % if sans-serif font selected
+		% \usekomavar[\ifstr]{mt::font}{sans-serif}{%
+		% 	% if default author format string is \Large\scshape:
+		% 	\usekomavar*[\ifstr]{mt::author::name}{\Large\scshape}{%
+		% 		{\Large\bfseries\usekomavar{mt::author::name}\\[0.125cm]}%
+		% 	}{%
+		% 		{\usekomavar*{mt::author::name}\usekomavar{mt::author::name}\\[0.125cm]}%
+		% 	}%
+		% }{%
+		% 	{\usekomavar*{mt::author::name}\usekomavar{mt::author::name}\\[0.125cm]}%
+		% }
+		% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		% {\large\usekomavar*{mt::author::place-of-birth}\usekomavar{mt::author::place-of-birth}}
+		% \vfil
+		% \usekomavar[\ifstr]{mt::author::number-of-affiliations}{1}{
+		% 	\mtIfKomavarNotEmptyWithOption{mt::institute}
+		% 	\mtIfKomavarNotEmptyWithOption{mt::faculty}
+		% 	\mtIfKomavarNotEmptyWithOption{mt::group}
+		% }{}
+		
+		% \usekomavar[\ifstr]{mt::author::number-of-affiliations}{2}{
+		% 	\begin{tabular}{m{0.45\linewidth}<{\centering}m{0.45\linewidth}<{\centering}}
+		% 		\mtIfKomavarNotEmptyWithOptionTABLE{mt::institute}
+		% 		\mtIfKomavarNotEmptyWithOptionTABLE{mt::faculty}
+		% 		\mtIfKomavarNotEmptyWithOptionTABLE{mt::group}
+		% 	\end{tabular}
+		% }{}
+		
+		% \vfill
+		% {\usekomavar{mt::date}\\}
+		% \vfill
+		% \mtIfKomavarNotEmptyWithoutOption{mt::examination-committee}
+		% \normalsize
+	
+	\end{titlepage}
+	
+	\newpage\null\thispagestyle{empty}
+} 
 \makeatother
 
 \newcommand{\mtTOC}{
