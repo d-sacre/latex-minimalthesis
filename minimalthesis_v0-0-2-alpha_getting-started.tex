@@ -2,166 +2,28 @@
 
 \usepackage{blindtext}
 
-\setup{
+\mtSetupComplete{
 	title = minimalthesis,
 	subtitle = {Getting started with v0.0.2-alpha},
 	author = {
-		name = Daniel Sacré, 
-		place of birth = Somewhere on Earth
+		name = Daniel Sacré
 	},
 	pdfmetadata = {
 		subject = {A Quick-Start-Guide for the "minimalthesis" LaTeX Documentclass, Version 0.0.2-alpha.},
 		keywords = {academic-thesis, template, latex, documentclass, minimalthesis, v.0.0.2-alpha, quick-start-guide, doc. rev. 0}
 	},
-%	titlepage = {
-%%%		title/text = WORKKKKKK!,
-%%		title/font/size = \large,
-%%		title/font/color = red,
-%%		subtitle/font/color = green
-%	}
-%	titlepage/font/title = \color{red}
+	titlepage = {
+		logo = {
+			object type = image,
+			file path = ./class/img/minimalthesis_logo.pdf,
+			height = 10 cm
+		}
+	}
 }
 
 \begin{document}
 	\mtTitlepage
 %	\mtTOC
 %	
-%	\chapter{General Information}
-%		\section{Default Settings \& User Choice}
-%			\subsection{Base Class \& Basic Layout}
-%				Per default, \verb|minimalthesis| uses the \verb|scrreprt| koma document class with a two sided layout (binding correction: \SI{1}{\centi\metre}) as a basis. The page headers and footers are centered; the footer contains the current page number. The header either contains the current section name (if a section exists; see e.g. page \pageref{sec:general-functionality-overview}) or the current chapter name (see e.g. page \pageref{page:example:header-with-chapter}).
-%				\newline Captions include in small, bold font the type of float, its number and are separated by a colon from the description in normal, small font (see e.g. table \ref{tab:example:mhchem}).
-%			
-%			\subsection{Language \& Locale}
-%				The default document language is set to \verb|english| \textcolor{red}{and currently cannot be changed by the user}. The settings for typesetting units (see \mbox{section \ref{sec:units}}) are directly derived from the default language.
-%			
-%			\subsection{Font, Visuals \& Color}
-%				The typesetting design is more classic-minimalist: 
-%				The user has the choice between the standard serif \verb|lmodern| \LaTeX~font or a sans serif variant as well as three visual styles (\verb|plain|, \verb|fancy-grayscale|, \verb|fancy-colorful|), which differ in highlighting/usage of color.
-%			
-%			\subsection{Hyperlinks \& pdf Metadata}
-%				Per default, hidden hyperlinks are activated. The pdf Metadata is created from the user information: The pdf author is equal to \verb|mt::author::name|,  \color{red}the pdf title will be constructed from \verb|mt::thesis::title| and/or \verb|mt::thesis::subtitle| (which ever is available; if both exist, they will be combined). The pdf subject as well as the pdf keywords are set by default to \enquote{Academic Thesis} and cannot be changed by the user.\color{black}
-%		
-%		\newpage
-%		\section{General Functionality Overview}
-%			\label{sec:general-functionality-overview}
-%			\subsection{Quotation Marks}
-%				To facilitate the usage of quotation marks, \verb|minimalthesis| loads the \verb|csquotes| package, which allows to automatically selects the appropriate quotation marks based on language preset and sentence parameters by using \verb|\enquote{text}|.
-%				\newline For example,\\[0.125cm]
-%				\begin{tabular}{lcl}
-%					\verb|\enquote{A quotation mark test.}|& $\rightarrow$ & \enquote{A quotation mark test.}\\
-%					\verb|\enquote{A \enquote{quotation mark} test.}|& $\rightarrow$ & \enquote{A \enquote{quotation mark} test.}\\
-%				\end{tabular}
-%		
-%	\chapter{Bibliography: Prerequisites, Usage \& Functionality}
-%		The bibliography is created by using \verb|biber|. On a Linux based OS with \verb|TeXlive| as a \LaTeX~backend, it can be installed via the\\[0.125cm]
-%		\begin{tabular}{ll}
-%			\verb|texlive-bibtex-extra|& (Debian based distro)\\
-%			\verb|texlive-bibtexextra|& (Arch based disto)
-%		\end{tabular}\\
-%		packages.
-%		\newline To create the required bibliography files, one has to run in the terminal:\\
-%		\verb|biber TEXFILENAME|\\
-%		To update the output pdf accordingly, the following sequence of commands is recommended:\\[-1cm]
-%		\begin{verbatim}
-%			pdflatex TEXFILENAME.tex &&
-%			biber TEXFILENAME &&
-%			pdflatex TEXFILENAME.tex &&
-%			pdflatex TEXFILENAME.tex 
-%		\end{verbatim} 
-%		\vspace{-0.5cm}
-%		For \verb|TeXstudio| users, it is possible to select under\\[-1cm]
-%		\begin{center}
-%			\verb|Options| $\rightarrow$ 
-%			\verb|Configure TeXstudio| $\rightarrow$
-%			\verb|Build|$ \rightarrow$
-%			\verb|Default Bibliography Tool| 
-%		\end{center}
-%		\vspace{-0.5cm}
-%		\verb|biber| as the default bibliography tool. After that, as soon as a change will occur in any of the bibliography files/data, \verb|TeXstudio| will automatically rebuild the bibliography during the next compilation (so no additional user interaction required). If \verb|TeXstudio| will not do that, a bibliography rebuild can be forced manually by pressing \verb|F8|.
-%		\newline \verb|minimalthesis| uses per default the \enquote{Angewandte Chemie} (\verb|chem-angew|) bibliography standard. \textcolor{red}{Currently, this cannot be changed by the user, except by modifying the preamble file.} 
-%		\newline In addition, \verb|minimalthesis| provides the \verb|@arxiv| \cite{arxivExample} and \verb|@thesis| \cite{thesisExample} bibliography drivers, so that Arxiv preprints and theses can be cited properly without any manual adjustments by the user.
-%		
-%		
-%		\newpage
-%		\label{page:example:header-with-chapter}
-%		\blindtext[4]
-%	
-%	\chapter{Natural Science}
-%		\section{Mathematical Formulae}
-%			To facilitate the typesetting of mathematical equations, especially with respect to physical use cases, \verb|minimalthesis| not only loads the \verb|amsmath|, \verb|bm| and \verb|amssymb| packages, but also the \verb|derivative| and \verb|physics| package to especially help with typesetting differentials and derivatives.
-%			\newline Typesetting derivatives via the \verb|derivative| package is very flexible: 
-%			\begin{table}[h!]
-%				\centering
-%				\caption{Examples on how to typeset derivatives with the \texttt{derivative} package}
-%				\begin{verbatim}
-%					\pdv{f}{x}, \quad \odv{Q}{t}=\odv{s}{t}, \quad \pdv{f}{x,y}, \quad 
-%					\derivset{\odv}[switch-*=false] \odv{y}{x}, \quad \odv[order=n]{y}{x}, \quad
-%					\derivset{\odv}[] \odv*{\odv{y}{x}}{x}, \quad 
-%					\derivset{\pdv}[sort-method={sign,symbol,abs}] 
-%					\pdv[order={c+kn,-b+2a}]{f}{x,y}
-%				\end{verbatim}
-%				\begin{align*}{c}
-%					\pdv{f}{x}, \quad \odv{Q}{t}=\odv{s}{t}, \quad \pdv{f}{x,y}, \quad 
-%					\derivset{\odv}[switch-*=false] \odv{y}{x}, \quad \odv[order=n]{y}{x}, \quad
-%					\derivset{\odv}[] \odv*{\odv{y}{x}}{x}, \quad 
-%					\derivset{\pdv}[sort-method={sign,symbol,abs}] \pdv[order={c+kn,-b+2a}]{f}{x,y}
-%				\end{align*}
-%			\end{table}
-%			An example for typesetting differentials with the \verb|physics| and \verb|derivative| packages:
-%			\begin{table}[h!]
-%				\centering
-%				\caption{Examples on how to typeset differentials with the \texttt{physics} and \texttt{derivative} package}
-%				\begin{verbatim}
-%					T = \int_{0}^{\infty}t\dd{t}, 
-%					\quad V = \int_{a}^{b} r \dd[3]{r} = \int_{a}^{b} r \odif{x,y,z}
-%				\end{verbatim}
-%				\begin{align*}
-%					T = \int_{0}^{\infty}t\dd{t}, \quad V = \int_{a}^{b} r \dd[3]{r} = \int_{a}^{b} r \odif{x,y,z}
-%				\end{align*}
-%				
-%			\end{table}
-%		
-%		\newpage
-%		\section{Chemical Formulae}
-%			For typesetting chemical formulae, \verb|minimalthesis| loads the \verb|mhchem| package.
-%			\begin{table}[h!]
-%				\caption{Examples how to use \texttt{mhchem}. Excerpt from the manual.}
-%				\label{tab:example:mhchem}
-%				\centering
-%				\begin{tabular}{lcl}
-%					\verb|\ce{H2O}, \ce{CO2}, \ce{NH3}| & $\rightarrow$ & \ce{H2O}, \ce{CO2}, \ce{NH3}\\[0.125cm]
-%					\verb|\ce{H+}, \ce{CrO4^2-}, \ce{[AgCl2]-}| & $\rightarrow$ & \ce{H+}, \ce{CrO4^2-}, \ce{[AgCl2]-} \\[0.125cm]
-%					\verb|\ce{Y^99+}, \ce{^{227}_{90}Th+}| & $\rightarrow$ & \ce{Y^99+}, \ce{^{227}_{90}Th+}\\[0.125cm]
-%					\verb|\ce{Fe^{II}Fe^{III}2O4}| & $\rightarrow$ & \ce{Fe^{II}Fe^{III}2O4}\\[0.125cm]
-%					\verb|\ce{(NH4)2S}, \ce{[\{(X2)3\}2]^3+}| & $\rightarrow$ & \ce{(NH4)2S}, \ce{[\{(X2)3\}2]^3+}\\[0.125cm]
-%					\verb|\ce{CO2 + C -> 2 CO}| & $\rightarrow$ & \ce{CO2 + C -> 2 CO}\\
-%				\end{tabular}
-%			\end{table}
-%			\newline For more information, please refer to the official \verb|mhchem| manual.
-%			
-%		\section{Units}
-%			\label{sec:units}
-%			To aid with typesetting units, \verb|minimalthesis| loads the \verb|siunitx| package. This package ensures that independent of the user input, all the number and unit conventions derived from the locale settings are satisfied. It also handles the different behavior in math and text environments.
-%			
-%			\begin{table}[h!]
-%				\caption{Examples how to use \texttt{siunitx}. }
-%				\label{tab:example:siunitx}
-%				\centering
-%				\begin{tabular}{lcl}
-%					\verb|\num{23,3}, \num{23.3}| & $\rightarrow$ & \num{23,3}, \num{23.3}\\[0.125cm]
-%					\verb|\SI{23,3}{\volt}, \SI{23.3}{\volt}| & $\rightarrow$ & \SI{23,3}{\volt}, \SI{23.3}{\volt}\\[0.125cm]
-%					\verb|\si{\kilo\metre}, \si{\kilogram\meter\per\second\squared}| & $\rightarrow$ & \si{\kilo\metre}, \si{\kilogram\meter\per\second\squared}\\[0.125cm]
-%					\verb|\si[per-mode=fraction]{\kilogram\meter\per\second\squared}| & $\rightarrow$ & \si[per-mode=fraction]{\kilogram\meter\per\second\squared}\\[0.125cm]
-%					\verb|$s = \SI{9.81}{\meter\per\second\squared}\cdot| & $\rightarrow$ &
-%					$s = \SI{9.81}{\meter\per\second\squared}\cdot\int_{0}^{t}t\dd{t}$\\
-%					\verb|\int_{0}^{t} t \dd{t}$| & & 
-%				\end{tabular}
-%			\end{table}
-%			
-%	\chapter{Changelog}
-%		\section{v0.0.2-alpha}
-%			\begin{itemize}
-%				\item Switched user settings from \verb|komavar| to \verb|pgfkeys|
-%			\end{itemize}
+%	\input{./minimalthesis_v0-0-2-alpha_getting-started_content.tex}
 \end{document}

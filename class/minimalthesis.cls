@@ -2,14 +2,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% start of file `minimalthesis.cls'.                                %%
 %%                                                                   %%
-%% version: v0.0.2                                                   %%
+%% version: v0.0.2-alpha                                             %%
 %% status: alpha                                                     %%
 %% file version: 2023-11-XX                                          %%
 %%                                                                   %%
 %% Copyright 2023 Daniel Sacré.                                      %%
 %%                                                                   %%    
 %% A very simple document class for writing theses, especially in    %%
-%% natural sciences                                                  %%
+%% natural sciences.                                                 %%
 %%                                                                   %%
 %% This piece of software comes without any warranty, not even that  %%
 %% it is fit for the intended purpose. Since it is an alpha-release, %%
@@ -23,7 +23,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\setcounter{errorcontextlines}{100}
+% \setcounter{errorcontextlines}{100}
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{./class/minimalthesis}[2023-11-30 v0.0.2-alpha Daniel Sacré LaTeX Project Public License version 1.3c]
 
@@ -45,19 +45,6 @@
 \RequirePackage{pgfkeys,ifthen}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% only for testing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \newcommand*\mt@title{}
-% \newcommand*\mt@titleformat{}
-
-% \pgfkeys{
-%     /mt/.cd,
-%     author/name/.store in = \mt@title,
-%     author/place of birth/.store in = \mt@titleformat
-% }
-
-% \newcommand*\setup[1]{\pgfqkeys{/mt}{#1}}
-
-% \newcommand{\testtitle}{{\mt@titleformat\mt@title}}
-
 % source: https://tex.stackexchange.com/questions/700759/pgfkeys-is-it-possible-to-achieve-a-dictionary-like-input-method-for-subkeys
 
 % should allow for two user input possibilities:
@@ -73,48 +60,23 @@
 %     }
 % }
 
-% \ExplSyntaxOn
-%     \keys_define:nn{mt}
-%     {
-%         author .code:n = {\keys_set:nn {mt/author}{#1}},
-%         author / name .tl_set:N = \l_mt_author_name,
-%         author / place~of~birth .tl_set:N = \l_mt_author_birth,
-%     }
-
-%     \newcommand{\test}{%
-%         \l_mt_author_name,~ %
-%         \l_mt_author_birth%
-%     }
-
-%     \newcommand*\setup[1]{\keys_set:nn{mt}{#1}}
-% \ExplSyntaxOff
-
-
-
 \makeatletter
-    % % macros for storing title data
-    % \newcommand{\@mt@titlepage@title@font@family}{\normalfont}
-    % \newcommand{\@mt@titlepage@title@font@size}{\Huge}
+    % macros for storing titlepage title data
     \newcommand{\@mt@titlepage@title@font@weight}{\bfseries}
-    % \newcommand{\@mt@titlepage@title@font@color}{black}
 
-    % % macros for storing subtitle data
-    % \newcommand{\@mt@titlepage@subtitle@font@family}{\normalfont}
-    % \newcommand{\@mt@titlepage@subtitle@font@size}{\huge}
+    % macros for storing titlepage subtitle data
     \newcommand{\@mt@titlepage@subtitle@font@weight}{\bfseries}
-    % \newcommand{\@mt@titlepage@subtitle@font@color}{black}
 
-
-    \pgfkeys{
+    \pgfkeys{%
         /handlers/.is setter/.code=\pgfkeysedef{\pgfkeyscurrentpath}{%
             \noexpand\pgfqkeys{\pgfkeyscurrentpath}{##1}%
-        },
-        /mt/.cd,
+        },%
+        /mt/.cd,%
+        title/.initial,%
+        subtitle/.initial,%
         author/.is setter,
             author/name/.initial,
             author/place of birth/.initial,
-        title/.initial,
-        subtitle/.initial,
         pdfmetadata/.is setter,
             pdfmetadata/title/.initial,
             pdfmetadata/subject/.initial = {Academic Thesis},
@@ -129,7 +91,7 @@
                     titlepage/title/font/size/.initial = \Huge,
                     titlepage/title/font/weight/.store in = \@mt@titlepage@title@font@weight,
                     titlepage/title/font/color/.initial = black,
-                titlepage/title/@formated/.initial ={
+                titlepage/title/@formated/.initial ={%
                     \pgfkeysvalueof{/mt/titlepage/title/font/family}%
                     \pgfkeysvalueof{/mt/titlepage/title/font/size}%
                     \@mt@titlepage@title@font@weight%
@@ -143,50 +105,61 @@
                     titlepage/subtitle/font/size/.initial = \huge,
                     titlepage/subtitle/font/weight/.store in = \@mt@titlepage@subtitle@font@weight,
                     titlepage/subtitle/font/color/.initial = black,
-                titlepage/subtitle/@formated/.initial = {
+                titlepage/subtitle/@formated/.initial = {%
                     \pgfkeysvalueof{/mt/titlepage/subtitle/font/family}%
                     \pgfkeysvalueof{/mt/titlepage/subtitle/font/size}%
                     \@mt@titlepage@subtitle@font@weight%
                     \color{\pgfkeysvalueof{/mt/titlepage/subtitle/font/color}}%
                     \pgfkeysvalueof{/mt/titlepage/subtitle/text}%
                 },
-            titlepage/logo/@insertable_element/.initial = \@mt@LogoTitlepage,
-        % author/.code={\pgfqkeys{/mt/author}{#1}},
-        %     author/name/.initial,
-        %     author/place of birth/.initial,
-        % title/.initial,
-        % subtitle/.initial,
-        % pdfmetadata/.code={\pgfqkeys{/mt/pdfmetadata}{#1}},
-        %     pdfmetadata/title/.initial,
-        %     pdfmetadata/subject/.initial = {Academic Thesis},
-        %     pdfmetadata/author/.initial  = \pgfkeysvalueof{/mt/author/name},
-        %     pdfmetadata/keywords/.initial = {Academic Thesis},
-        %     pdfmetadata/creator/.initial = {LaTeX with minimalthesis v0.0.2-alpha and hyperref},
-        % titlepage/.code={\pgfqkeys{/mt/titlepage}{#1}},
-        %     % needs to be overhauled for capability to accept dictionary style input
-        %     titlepage/title/text/.initial = \pgfkeysvalueof{/mt/title},
-        %     titlepage/title/font/family/.store in = \@mt@titlepage@title@font@family,
-        %     titlepage/title/font/size/.store in = \@mt@titlepage@title@font@size,
-        %     titlepage/title/font/weight/.store in = \@mt@titlepage@title@font@weight,
-        %     titlepage/title/font/color/.store in = \@mt@titlepage@title@font@color,
-        %     titlepage/subtitle/text/.initial = \pgfkeysvalueof{/mt/subtitle},
-        %     titlepage/subtitle/font/family/.store in = \@mt@titlepage@subtitle@font@family,
-        %     titlepage/subtitle/font/size/.store in = \@mt@titlepage@subtitle@font@size,
-        %     titlepage/subtitle/font/weight/.store in = \@mt@titlepage@subtitle@font@weight,
-        %     titlepage/subtitle/font/color/.store in = \@mt@titlepage@subtitle@font@color,
-        %     titlepage/logo/@insertable_element/.initial = \@mt@LogoTitlepage,
+            titlepage/logo/.is setter,
+                titlepage/logo/object type/.initial,
+                titlepage/logo/file path/.initial,
+                titlepage/logo/height/.initial,
+                titlepage/logo/width/.initial,
+            titlepage/logo/@insertable_element/.initial = {%
+                \ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/logo/object type}}{image}}{%
+                    % object type = image
+                    \vspace{0.5cm}
+                    \ifthenelse{%
+                        \equal{\pgfkeysvalueof{/mt/titlepage/logo/height}}{}%
+                    }{%
+                        % no height specified
+                        \ifthenelse{%
+                            \equal{\pgfkeysvalueof{/mt/titlepage/logo/width}}{}%
+                        }{%
+                            % no height, no width specified
+                            \includegraphics{\pgfkeysvalueof{/mt/titlepage/logo/file path}}%
+                        }{
+                            % no height specified, width specified
+                            \includegraphics[width = \pgfkeysvalueof{/mt/titlepage/logo/width}]{\pgfkeysvalueof{/mt/titlepage/logo/file path}}
+                        }
+                    }{%
+                        % height specified
+                        \ifthenelse{%
+                            \equal{\pgfkeysvalueof{/mt/titlepage/logo/width}}{}%
+                        }{%
+                            % height specified, no width specified
+                            % REMARK: To prevent issues with parsing of optional arguments by includegraphics, writing the full macro for each case.
+                            % FUTURE: Improve logic
+                            \includegraphics[height = \pgfkeysvalueof{/mt/titlepage/logo/height}]{\pgfkeysvalueof{/mt/titlepage/logo/file path}}
+                        }{%
+                            % height and width specified
+                            \includegraphics[%
+                                height = \pgfkeysvalueof{/mt/titlepage/logo/height},%
+                                width = \pgfkeysvalueof{/mt/titlepage/logo/width}%
+                            ]{\pgfkeysvalueof{/mt/titlepage/logo/file path}}
+                        }
+                    }%
+                    \vspace{0.5cm}
+                }{unrecognized type}%
+            }%
     }
 
-    \newcommand*\@mt@pgfkeys@setup@TEMPLATE[2]{\pgfqkeys{#1}{#2}}
-    \newcommand*\setup[1]{\@mt@pgfkeys@setup@TEMPLATE{/mt}{#1}} %\pgfqkeys{/mt}{#1}
+    % \newcommand*\@mt@pgfkeys@setup@TEMPLATE[2]{\pgfqkeys{#1}{#2}}
+    \newcommand*\mtSetupComplete[1]{\pgfqkeys{/mt}{#1}}%\@mt@pgfkeys@setup@TEMPLATE{/mt}{#1}} %\pgfqkeys{/mt}{#1}
 \makeatother
 
-
-
-\newcommand{\test}{%
-    \pgfkeysvalueof{/mt/author/name}, %
-    \pgfkeysvalueof{/mt/author/place of birth}%
-}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage[english]{babel}
@@ -214,7 +187,7 @@
 
 
 \makeatletter
-\newcommand{\rightorleftmark}{%
+    \newcommand{\rightorleftmark}{%
         \begingroup\protected@edef\x{\rightmark}%
         \ifx\x\@empty
             \endgroup
@@ -231,27 +204,27 @@
 \renewcommand*{\chapterheadendvskip}{\vspace{0.5cm}}
 
 \makeatletter
-%% check if this are the original definitions
-\CheckCommand\section{%
-    \scr@startsection{section}{\sectionnumdepth}{\z@}%
-    {-3.5ex \@plus -1ex \@minus -.2ex}%
-    {2.3ex \@plus.2ex}%
-    {\ifnum \scr@compatibility>\@nameuse{scr@v@2.96}\relax
-    \setlength{\parfillskip}{\z@ plus 1fil}\fi
-    \raggedsection\normalfont\sectfont\nobreak\size@section}%
-}
+    %% check if this are the original definitions
+    \CheckCommand\section{%
+        \scr@startsection{section}{\sectionnumdepth}{\z@}%
+        {-3.5ex \@plus -1ex \@minus -.2ex}%
+        {2.3ex \@plus.2ex}%
+        {\ifnum \scr@compatibility>\@nameuse{scr@v@2.96}\relax
+        \setlength{\parfillskip}{\z@ plus 1fil}\fi
+        \raggedsection\normalfont\sectfont\nobreak\size@section}%
+    }
 
-\renewcommand\section{%
-    \scr@startsection{section}{\sectionnumdepth}{\z@}%
-    {-.5\baselineskip}%
-    {.0625\baselineskip}%
-    {\ifnum \scr@compatibility>\@nameuse{scr@v@2.96}\relax
-    \setlength{\parfillskip}{\z@ plus 1fil}\fi
-    \raggedsection\normalfont\sectfont\nobreak\size@section}%
-}
+    \renewcommand\section{%
+        \scr@startsection{section}{\sectionnumdepth}{\z@}%
+        {-.5\baselineskip}%
+        {.0625\baselineskip}%
+        {\ifnum \scr@compatibility>\@nameuse{scr@v@2.96}\relax
+        \setlength{\parfillskip}{\z@ plus 1fil}\fi
+        \raggedsection\normalfont\sectfont\nobreak\size@section}%
+    }
 \makeatother
 
-%usepackages related to graphics
+% usepackages related to graphics
 \RequirePackage[dvipsnames]{xcolor}
 \RequirePackage{graphicx}
 \RequirePackage{wrapfig}
@@ -263,13 +236,13 @@
 \usetikzlibrary{fadings}
 \usetikzlibrary{mindmap,trees}
 
-%usepackages related to science
+% usepackages related to science
 \RequirePackage{siunitx}
 \RequirePackage{mhchem}
 \RequirePackage{amsmath,bm,amssymb}
 \RequirePackage{physics} % derivative, differentials
 \RequirePackage{derivative}
-\RequirePackage{harpoon} %provides \overrightharp
+\RequirePackage{harpoon} % provides \overrightharp
 
 % plotting
 \RequirePackage{tikz-3dplot}
@@ -325,28 +298,18 @@
 	\begin{titlepage}
 		\centering
 		\vfil
-        { %
-            \pgfkeysvalueof{/mt/titlepage/title/@formated}
-            % \@mt@titlepage@title@font@family%
-            % \@mt@titlepage@title@font@size%
-            % \@mt@titlepage@title@font@weight%
-            % \color{\@mt@titlepage@title@font@color}%
-            % \pgfkeysvalueof{/mt/titlepage/title/text}%
-        }%
+        % needs to leak font settings so that line break distance to optional subtitle is correct
+        \pgfkeysvalueof{/mt/titlepage/title/@formated}% 
         \ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/subtitle/text}}{}}{%
             % if no subtitle is specified
             % nothing to do
         }{%
             \\
-            \pgfkeysvalueof{/mt/titlepage/subtitle/@formated}
-            % \@mt@titlepage@subtitle@font@family%
-            % \@mt@titlepage@subtitle@font@size%
-            % \@mt@titlepage@subtitle@font@weight%
-            % \color{\@mt@titlepage@subtitle@font@color}%
-            % \pgfkeysvalueof{/mt/titlepage/subtitle/text}%
-        }
+            {\pgfkeysvalueof{/mt/titlepage/subtitle/@formated}\\}%
+            \normalfont\normalsize% required to reset any changes from the title
+        }%
 		\vfill
-		\ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/logo/@insertable_element}}{}}{%
+		\ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/logo/object type}}{}}{%
             % if no logo is specified
             % nothing to do
         }{%
@@ -409,28 +372,28 @@
 	\newpage\null\thispagestyle{empty}
 }
 
-% Setting up document after user settings are available
-% setting up the pdf meta data
-\AddToHook{begindocument/end}{
-    % create pdf title; if no specific pdf title is specified by the user, use thesis title and subtitle.
-    % If no thesis subtitle is specified, use only thesis title
-    \ifthenelse{\equal{\pgfkeysvalueof{/mt/pdfmetadata/title}}{}}{% if pdf title key is not set by user to a specific value
-        \ifthenelse{\equal{\pgfkeysvalueof{/mt/subtitle}}{}}{
-            \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/title}}
-        }{
-            \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/title}~–~\pgfkeysvalueof{/mt/subtitle}}
-        }
-    }{%
-        % pdf title key is specified by user
-        % nothing to do 
-    }
+% % Setting up document after user settings are available
+% % setting up the pdf meta data
+% \AddToHook{begindocument/end}{
+%     % create pdf title; if no specific pdf title is specified by the user, use thesis title and subtitle.
+%     % If no thesis subtitle is specified, use only thesis title
+%     \ifthenelse{\equal{\pgfkeysvalueof{/mt/pdfmetadata/title}}{}}{% if pdf title key is not set by user to a specific value
+%         \ifthenelse{\equal{\pgfkeysvalueof{/mt/subtitle}}{}}{
+%             \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/title}}
+%         }{
+%             \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/title}~–~\pgfkeysvalueof{/mt/subtitle}}
+%         }
+%     }{%
+%         % pdf title key is specified by user
+%         % nothing to do 
+%     }
 
-    % setting the pdf metadata
-    \hypersetup{
-        pdftitle={\pgfkeysvalueof{/mt/pdfmetadata/title}},
-        pdfsubject={\pgfkeysvalueof{/mt/pdfmetadata/subject}},
-        pdfauthor={\pgfkeysvalueof{/mt/pdfmetadata/author}},
-        pdfkeywords={\pgfkeysvalueof{/mt/pdfmetadata/keywords}},
-        pdfcreator={\pgfkeysvalueof{/mt/pdfmetadata/creator}}
-    }
-}
+%     % setting the pdf metadata
+%     \hypersetup{
+%         pdftitle={\pgfkeysvalueof{/mt/pdfmetadata/title}},
+%         pdfsubject={\pgfkeysvalueof{/mt/pdfmetadata/subject}},
+%         pdfauthor={\pgfkeysvalueof{/mt/pdfmetadata/author}},
+%         pdfkeywords={\pgfkeysvalueof{/mt/pdfmetadata/keywords}},
+%         pdfcreator={\pgfkeysvalueof{/mt/pdfmetadata/creator}}
+%     }
+% }
