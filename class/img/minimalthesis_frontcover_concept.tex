@@ -1,0 +1,65 @@
+\documentclass[
+a4paper,
+bibliography=totoc,
+listof=totoc,
+noindent,
+parskip=full,
+twoside,
+open=any,
+BCOR=1cm,
+]{scrreprt}
+
+\usepackage[twoside,outer=2.5cm,inner=3.5cm,top=2cm,bottom=2cm,includeheadfoot]{geometry}
+\usepackage{graphicx}
+
+\usepackage{tikz}
+\usetikzlibrary{shadings,shapes,positioning,calc,patterns}
+\usetikzlibrary{
+	decorations.pathmorphing,
+	decorations.pathreplacing,
+	decorations.shapes,
+	decorations.text,
+}
+
+% source: https://tex.stackexchange.com/questions/66216/draw-arc-in-tikz-when-center-of-circle-is-specified
+\def\centerarc[#1](#2)(#3:#4:#5)% Syntax: [draw options] (center) (initial angle:final angle:radius)
+{ \draw[#1] ($(#2)+({#5*cos(#3)},{#5*sin(#3)})$) arc (#3:#4:#5); }
+
+\def\scale{0.55} % 0.55
+
+% source of typewriter image: https://openclipart.org/detail/322953/typewriter, License: CC0
+
+\usepackage{pagecolor}
+
+\begin{document}
+	\pagecolor{cyan}
+	\thispagestyle{empty}
+	\begin{tikzpicture}[remember picture, overlay]
+		\node[text=white,font=\Huge\sffamily\bfseries] at ($(current page.center)!0.75!(current page.north)$) {Daniel Sacré};
+		
+		\node[text=white,font=\Huge\sffamily\bfseries, align=center] at ($(current page.center)!0.75!(current page.south)$) {
+			– Quick-Start-Guide –\\
+			{\normalsize for the "minimalthesis" LaTeX Documentclass, Version 0.0.2-alpha }
+		};
+
+		\begin{scope}[shift={(current page.center)}]
+			% new variant
+			
+			% background 
+				% outer line
+				\path[draw=white, line width = \scale*0.375*0.5*0.5 cm, rounded corners=0.5cm]($(current page.north east)+(-1.25,-1.25)$)rectangle($(current page.south west)+(1.25,1.25)$);
+				\path[draw=white, line width = \scale*0.375*0.5 cm, rounded corners=0.75cm]($(current page.north east)+(-1,-1)$)rectangle($(current page.south west)+(1,1)$);
+				
+				% ring
+				\path[fill=white](0,0)circle(\scale*7.125cm);
+				
+				% square
+				\path[draw=white, fill=cyan, line width = \scale*0.75 cm](-2*\scale*5.5cm/2,-2*\scale*5.5cm/2)rectangle++(2*\scale*5.5cm,2*\scale*5.5cm);
+				\path[fill=white](0,0)circle(\scale*4.5cm); % inner color highlight
+				\node at (0,0){
+					\includegraphics[width=7cm]{./minimalthesis_logo.pdf}
+				};
+		
+		\end{scope}
+	\end{tikzpicture}
+\end{document}
