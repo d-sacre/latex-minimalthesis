@@ -1,0 +1,34 @@
+\documentclass{article}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=newest}
+
+\usepackage{pgfkeys,pgffor}
+
+\pgfkeys{%
+	/mt/.cd,%
+	reviewers/.initial
+}
+
+\newcommand*\setup[1]{\pgfqkeys{/mt}{#1}}
+
+\setup{%
+	reviewers = {Prof. Hans Bartolomä, Prof. Louis Murphy}
+}
+
+\begin{document}
+
+	\pgfplotstableset{create on use/NewColA/.style={
+			create col/set list={a,b,c,d},
+		},
+		columns/NewColA/.style={string type},
+		create on use/NewColB/.style={
+			create col/set list={Prof. Hans Bartolomä, Prof. Louis Murphy},
+		},
+		columns/NewColB/.style={string type},
+	}
+	
+
+	\pgfplotstabletypeset[col sep=comma, 
+	columns={NewColA,NewColB}
+	]{\jobname-table.txt}
+\end{document}

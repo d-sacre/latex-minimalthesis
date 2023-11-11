@@ -1,0 +1,39 @@
+\documentclass{./class/minimalthesis}
+
+\usepackage{blindtext}
+
+
+\mtSetupComplete{
+	thesis = {
+		title = minimalthesis,
+		subtitle = {Getting started with v0.0.2-alpha},
+		type = Dissertation,
+		author = {
+			name = Daniel Sacré,
+			place of birth = New York
+		},
+		examiners = {
+			chairman = Prof. Habakuk Tibatong,
+			reviewers = {Prof. Hans Bartolomä, Prof. Louis Murphy},
+			additional = Prof. Stefan Boltzmann
+		}
+	},
+	pdfmetadata = {
+		subject = {A Quick-Start-Guide for the "minimalthesis" LaTeX Documentclass, Version 0.0.2-alpha.},
+		keywords = {academic-thesis, template, latex, documentclass, minimalthesis, v.0.0.2-alpha, quick-start-guide, doc. rev. 0}
+	},
+	titlepage = {
+		logo = {
+			object type = image,
+			file path = ./class/img/minimalthesis_logo.pdf,
+			height = 10 cm
+		},
+	}
+}
+
+\begin{document}
+	\mtTitlepage
+%	\mtTOC
+%	
+%	\input{./minimalthesis_v0-0-2-alpha_getting-started_content.tex}
+\end{document}
