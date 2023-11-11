@@ -42,8 +42,8 @@
     headsepline,
 ]{scrreprt}
 
-\RequirePackage{pgfkeys,ifthen, etoolbox}
-% \RequirePackage{csquotes}
+\RequirePackage{ifthen, etoolbox}
+\RequirePackage{pgfkeys, pgffor}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% only for testing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % source: https://tex.stackexchange.com/questions/700759/pgfkeys-is-it-possible-to-achieve-a-dictionary-like-input-method-for-subkeys
@@ -71,6 +71,10 @@
     \newcommand{\@mt@titlepage@author@font@weight}{}
     \newcommand{\@mt@titlepage@placeOfBirth@font@weight}{}
     \newcommand{\@mt@titlepage@date@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@title@font@weight}{\bfseries}
+
+    % counters
+    \newcounter{@mt@thesis@titlepage@reviewers@counter}
 
     \newcommand{\@mt@titlepage@logo@insertableElement@GENERATE}{
         \ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/logo/object type}}{image}}{%
@@ -140,6 +144,10 @@
         }{}%
     }
 
+    \newcommand{\@mt@titlepage@examinationCommittee@reviewers@formated}{%
+        \pgfkeys{body loop/.code={\\{\raggedright\the@mt@thesis@titlepage@reviewers@counter.~Reviewer:} \hfill {\raggedleft{##1}}\stepcounter{@mt@thesis@titlepage@reviewers@counter}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/examiners/reviewers}}%
+    }%
+
     \pgfkeys{%
         /handlers/.is setter/.code=\pgfkeysedef{\pgfkeyscurrentpath}{%
             \noexpand\pgfqkeys{\pgfkeyscurrentpath}{##1}%
@@ -154,6 +162,10 @@
                 thesis/author/place of birth/.initial,
             thesis/type/.initial,
             thesis/date/.initial = \today,
+            thesis/examiners/.is setter,
+                thesis/examiners/chairman/.initial,
+                thesis/examiners/reviewers/.initial,
+                thesis/examiners/additional/.initial,
         pdfmetadata/.is setter,
             pdfmetadata/title/.initial,
             pdfmetadata/subject/.initial = {Academic Thesis},
@@ -281,6 +293,23 @@
                     \color{\pgfkeysvalueof{/mt/titlepage/date/font/color}}%
                     \pgfkeysvalueof{/mt/titlepage/date/text}%
                 },%
+            titlepage/examination committee/.is setter,%
+                titlepage/examination committee/width/.initial = 0.66\linewidth,
+                titlepage/examination committee/title/.is setter,
+                    titlepage/examination committee/title/text/.initial = Examination Committee:,
+                    titlepage/examination committee/title/font/.is setter,
+                        titlepage/examination committee/title/font/family/.initial = \normalfont,
+                        titlepage/examination committee/title/font/size/.initial = \normalsize,
+                        titlepage/examination committee/title/font/weight/.store in = \@mt@titlepage@examinationCommittee@title@font@weight,
+                        titlepage/examination committee/title/font/color/.initial = black,
+                titlepage/examination committee/title/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/title/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/title/font/size}%
+                    \@mt@titlepage@examinationCommittee@title@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/examination committee/title/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/title/text}%
+                },%
+                titlepage/examination comittee/reviewers/@formated/.initial = \pgfkeys{body loop/.code={\\\the@mt@thesis@titlepage@reviewers@counter.~Reviewer: #1 \stepcounter{@mt@thesis@titlepage@reviewers@counter}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/examiners/reviewers}}
     }
 
     % \newcommand*\@mt@pgfkeys@setup@TEMPLATE[2]{\pgfqkeys{#1}{#2}}
@@ -511,7 +540,46 @@
             {\pgfkeysvalueof{/mt/titlepage/date/@formated}}%
         }
 		\vfill
-		% \mtIfKomavarNotEmptyWithoutOption{mt::examination-committee}
+        % examination committe
+        % TO-DO: Port this from minipage to table, so that the spacing is less ragged
+        % ISSUE: pgfkey list expansion does not work inside of table
+		\ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/titlepage/examination committee/title/text}}{}%
+        }{%
+            % if no examination comittee title is specified
+            % nothing to do
+        }{%
+            \setcounter{@mt@thesis@titlepage@reviewers@counter}{1}
+            \begin{minipage}{\pgfkeysvalueof{/mt/titlepage/examination committee/width}}
+                {\raggedright\pgfkeysvalueof{/mt/titlepage/examination committee/title/@formated}\\}
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/thesis/examiners/chairman}}{}%
+                }{%
+                    % if no chairman specified
+                    % nothing to do
+                }{%
+                    {\raggedright Chairman:} \hfill {\raggedleft\pgfkeysvalueof{/mt/thesis/examiners/chairman}}%
+                }%
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/thesis/examiners/reviewers}}{}%
+                }{%
+                    % no reviewers specified
+                    % nothing to do
+                }{%
+                    % \pgfkeysvalueof{/mt/titlepage/examination comitte/reviewers/@formated}
+                    \@mt@titlepage@examinationCommittee@reviewers@formated%
+                }%
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/thesis/examiners/additional}}{}%
+                }{%
+                    % no additional reviewer specified
+                    % nothing to do
+                }{%
+                   {\\\raggedright Additional Examiner:} \hfill {\raggedleft\pgfkeysvalueof{/mt/thesis/examiners/additional}}
+                }%
+            \end{minipage}
+     
+        }
 		\normalsize\normalfont % set font to document default to prevent any issues futher along
 	\end{titlepage}
 	
@@ -533,6 +601,11 @@
 % Setting up document after user settings are available
 % setting up the pdf meta data
 \AddToHook{begindocument/end}{
+    % font setup
+    % sans serif
+    % \usepackage{tgtermes}
+	% \renewcommand*\familydefault{\sfdefault}
+
     % create pdf title; if no specific pdf title is specified by the user, use thesis title and subtitle.
     % If no thesis subtitle is specified, use only thesis title
     \ifthenelse{\equal{\pgfkeysvalueof{/mt/pdfmetadata/title}}{}}{% if pdf title key is not set by user to a specific value
