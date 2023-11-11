@@ -42,7 +42,8 @@
     headsepline,
 ]{scrreprt}
 
-\RequirePackage{pgfkeys,ifthen}
+\RequirePackage{pgfkeys,ifthen, etoolbox}
+% \RequirePackage{csquotes}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% only for testing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % source: https://tex.stackexchange.com/questions/700759/pgfkeys-is-it-possible-to-achieve-a-dictionary-like-input-method-for-subkeys
@@ -61,14 +62,83 @@
 % }
 
 \makeatletter
-    % macros for storing titlepage title data
+    % macros for storing titlepage font weight data
     \newcommand{\@mt@titlepage@title@font@weight}{\bfseries}
-
-    % macros for storing titlepage subtitle data
     \newcommand{\@mt@titlepage@subtitle@font@weight}{\bfseries}
-
-    % macros for storing titlepage author data
+    \newcommand{\@mt@titlepage@thesisType@font@weight}{}
+    \newcommand{\@mt@titlepage@legalIdentifier@font@weight}{}
+    \newcommand{\@mt@titlepage@handedInBy@font@weight}{}
     \newcommand{\@mt@titlepage@author@font@weight}{}
+    \newcommand{\@mt@titlepage@placeOfBirth@font@weight}{}
+    \newcommand{\@mt@titlepage@date@font@weight}{}
+
+    \newcommand{\@mt@titlepage@logo@insertableElement@GENERATE}{
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/logo/object type}}{image}}{%
+            % object type = image
+            \vspace{0.5cm}
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/titlepage/logo/height}}{}%
+            }{%
+                % no height specified
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/titlepage/logo/width}}{}%
+                }{%
+                    % no height, no width specified
+                    \includegraphics{\pgfkeysvalueof{/mt/titlepage/logo/file path}}%
+                }{
+                    % no height specified, width specified
+                    \includegraphics[width = \pgfkeysvalueof{/mt/titlepage/logo/width}]{\pgfkeysvalueof{/mt/titlepage/logo/file path}}
+                }
+            }{%
+                % height specified
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/titlepage/logo/width}}{}%
+                }{%
+                    % height specified, no width specified
+                    % REMARK: To prevent issues with parsing of optional arguments by includegraphics, writing the full macro for each case.
+                    % FUTURE: Improve logic
+                    \includegraphics[height = \pgfkeysvalueof{/mt/titlepage/logo/height}]{\pgfkeysvalueof{/mt/titlepage/logo/file path}}
+                }{%
+                    % height and width specified
+                    \includegraphics[%
+                        height = \pgfkeysvalueof{/mt/titlepage/logo/height},%
+                        width = \pgfkeysvalueof{/mt/titlepage/logo/width}%
+                    ]{\pgfkeysvalueof{/mt/titlepage/logo/file path}}%
+                }%
+            }%
+            \vspace{0.5cm}
+        }{unrecognized type}%
+    }
+
+    \newcommand{\@mt@titlepage@thesisType@text@GENERATE}{
+        \pgfkeysvalueof{/mt/thesis/type}%
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/thesis/type}}{Dissertation}%
+        }{}{~Thesis}
+    }
+
+    \newcommand{\@mt@titlepage@legalIdentifier@text@GENERATE}{
+        To obtain the Academic Degree\\
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/thesis/type}}{Bachelor}%
+        }{%
+            \enquote{Bachelor of Science (B.Sc.)}%
+        }{}%
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/thesis/type}}{Master}%
+        }{%
+            \enquote{Master of Science (M.Sc.)}%
+        }{}%
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/thesis/type}}{Dissertation}}{%
+            \enquote{Philosophical Doctor (PhD)}%
+        }{}%
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/thesis/type}}{Doctoral}}{%
+            \enquote{Philosophical Doctor (PhD)}%
+        }{}%
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/thesis/type}}{PhD}}{%
+            \enquote{Philosophical Doctor (PhD)}%
+        }{}%
+    }
 
     \pgfkeys{%
         /handlers/.is setter/.code=\pgfkeysedef{\pgfkeyscurrentpath}{%
@@ -78,10 +148,12 @@
         thesis/.is setter,
             thesis/title/.initial,%
             thesis/subtitle/.initial,%
+            thesis/type/.initial,%
             thesis/author/.is setter,
                 thesis/author/name/.initial,
                 thesis/author/place of birth/.initial,
             thesis/type/.initial,
+            thesis/date/.initial = \today,
         pdfmetadata/.is setter,
             pdfmetadata/title/.initial,
             pdfmetadata/subject/.initial = {Academic Thesis},
@@ -123,42 +195,50 @@
                 titlepage/logo/height/.initial,
                 titlepage/logo/width/.initial,
             titlepage/logo/@insertable_element/.initial = {%
-                \ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/logo/object type}}{image}}{%
-                    % object type = image
-                    \vspace{0.5cm}
-                    \ifthenelse{%
-                        \equal{\pgfkeysvalueof{/mt/titlepage/logo/height}}{}%
-                    }{%
-                        % no height specified
-                        \ifthenelse{%
-                            \equal{\pgfkeysvalueof{/mt/titlepage/logo/width}}{}%
-                        }{%
-                            % no height, no width specified
-                            \includegraphics{\pgfkeysvalueof{/mt/titlepage/logo/file path}}%
-                        }{
-                            % no height specified, width specified
-                            \includegraphics[width = \pgfkeysvalueof{/mt/titlepage/logo/width}]{\pgfkeysvalueof{/mt/titlepage/logo/file path}}
-                        }
-                    }{%
-                        % height specified
-                        \ifthenelse{%
-                            \equal{\pgfkeysvalueof{/mt/titlepage/logo/width}}{}%
-                        }{%
-                            % height specified, no width specified
-                            % REMARK: To prevent issues with parsing of optional arguments by includegraphics, writing the full macro for each case.
-                            % FUTURE: Improve logic
-                            \includegraphics[height = \pgfkeysvalueof{/mt/titlepage/logo/height}]{\pgfkeysvalueof{/mt/titlepage/logo/file path}}
-                        }{%
-                            % height and width specified
-                            \includegraphics[%
-                                height = \pgfkeysvalueof{/mt/titlepage/logo/height},%
-                                width = \pgfkeysvalueof{/mt/titlepage/logo/width}%
-                            ]{\pgfkeysvalueof{/mt/titlepage/logo/file path}}
-                        }
-                    }%
-                    \vspace{0.5cm}
-                }{unrecognized type}%
+                \@mt@titlepage@logo@insertableElement@GENERATE%
             },%
+            titlepage/thesis type/.is setter,% 
+                titlepage/thesis type/text/.initial,
+                titlepage/thesis type/font/.is setter,
+                    titlepage/thesis type/font/family/.initial = \normalfont, 
+                    titlepage/thesis type/font/size/.initial = \Large,
+                    titlepage/thesis type/font/weight/.store in = \@mt@titlepage@thesisType@font@weight,
+                    titlepage/thesis type/font/color/.initial = black,
+                titlepage/thesis type/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/thesis type/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/thesis type/font/size}%
+                    \@mt@titlepage@thesisType@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/thesis type/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/thesis type/text}%
+                },
+            titlepage/legal identifier/.is setter,% 
+                titlepage/legal identifier/text/.initial, 
+                titlepage/legal identifier/font/.is setter,
+                    titlepage/legal identifier/font/family/.initial = \normalfont, % needs to be changed if main document font is set to sans serif
+                    titlepage/legal identifier/font/size/.initial = \large,
+                    titlepage/legal identifier/font/weight/.store in = \@mt@titlepage@legalIdentifier@font@weight,
+                    titlepage/legal identifier/font/color/.initial = black,
+                titlepage/legal identifier/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/legal identifier/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/legal identifier/font/size}%
+                    \@mt@titlepage@legalIdentifier@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/legal identifier/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/legal identifier/text}%
+                },
+            titlepage/handed in by/.is setter,
+                titlepage/handed in by/text/.initial = handed in by,
+                titlepage/handed in by/font/.is setter,
+                    titlepage/handed in by/font/family/.initial = \normalfont,
+                    titlepage/handed in by/font/size/.initial = \large,
+                    titlepage/handed in by/font/weight/.store in = \@mt@titlepage@handedInBy@font@weight,
+                    titlepage/handed in by/font/color/.initial = black,
+                titlepage/handed in by/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/handed in by/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/handed in by/font/size}%
+                    \@mt@titlepage@handedInBy@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/handed in by/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/handed in by/text}%
+                },%
             titlepage/author/.is setter,% 
                 titlepage/author/text/.initial = \pgfkeysvalueof{/mt/thesis/author/name},
                 titlepage/author/font/.is setter,
@@ -172,7 +252,35 @@
                     \@mt@titlepage@author@font@weight%
                     \color{\pgfkeysvalueof{/mt/titlepage/author/font/color}}%
                     \pgfkeysvalueof{/mt/titlepage/author/text}%
-            },
+                },%
+            titlepage/place of birth/.is setter,%
+                titlepage/place of birth/text/.initial = from \pgfkeysvalueof{/mt/thesis/author/place of birth},
+                titlepage/place of birth/font/.is setter,
+                    titlepage/place of birth/font/family/.initial = \normalfont,
+                    titlepage/place of birth/font/size/.initial = \large,
+                    titlepage/place of birth/font/weight/.store in = \@mt@titlepage@placeOfBirth@font@weight,
+                    titlepage/place of birth/font/color/.initial = black,
+                titlepage/place of birth/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/place of birth/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/place of birth/font/size}%
+                    \@mt@titlepage@placeOfBirth@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/place of birth/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/place of birth/text}%
+                },%
+            titlepage/date/.is setter,%
+                titlepage/date/text/.initial = \pgfkeysvalueof{/mt/thesis/date},
+                titlepage/date/font/.is setter,
+                    titlepage/date/font/family/.initial = \normalfont,
+                    titlepage/date/font/size/.initial = \normalsize,
+                    titlepage/date/font/weight/.store in = \@mt@titlepage@date@font@weight,
+                    titlepage/date/font/color/.initial = black,
+                titlepage/date/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/date/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/date/font/size}%
+                    \@mt@titlepage@date@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/date/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/date/text}%
+                },%
     }
 
     % \newcommand*\@mt@pgfkeys@setup@TEMPLATE[2]{\pgfqkeys{#1}{#2}}
@@ -306,12 +414,6 @@
 
 % macro definition
 \makeatletter
-\newcommand{\@mt@LogoTitlepage}{
-	\vspace{0.5cm}
-	\includegraphics[width=12cm]{./class/img/minimalthesis_logo.pdf}
-	\vspace{0.5cm}
-}
-
 \newcommand{\mtTitlepage}{%
 	\newgeometry{twoside,outer=2.5cm,inner=3.5cm,top=2cm,bottom=2cm,includeheadfoot}
 	\begin{titlepage}
@@ -335,25 +437,55 @@
 			\pgfkeysvalueof{/mt/titlepage/logo/@insertable_element}\\
 			\vfill
 		}
-		% {\usekomavar*{mt::thesis::type}\usekomavar{mt::thesis::type}\\}
-		% {\large \usekomavar*{mt::thesis:legal-type-identifier}\\}
-		% {\enquote{\usekomavar{mt::thesis:legal-type-identifier}}\vfil}
-		% {\usekomavar*{mt::handed-in-by} \usekomavar{mt::handed-in-by}\\}
-		% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        {\pgfkeysvalueof{/mt/titlepage/author/@formated}} % \\[0.125cm]
-		% % if sans-serif font selected
-		% \usekomavar[\ifstr]{mt::font}{sans-serif}{%
-		% 	% if default author format string is \Large\scshape:
-		% 	\usekomavar*[\ifstr]{mt::author::name}{\Large\scshape}{%
-		% 		{\Large\bfseries\usekomavar{mt::author::name}\\[0.125cm]}%
-		% 	}{%
-		% 		{\usekomavar*{mt::author::name}\usekomavar{mt::author::name}\\[0.125cm]}%
-		% 	}%
-		% }{%
-		% 	{\usekomavar*{mt::author::name}\usekomavar{mt::author::name}\\[0.125cm]}%
-		% }
-		% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		% {\large\usekomavar*{mt::author::place-of-birth}\usekomavar{mt::author::place-of-birth}}
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/titlepage/thesis type/text}}{}%
+        }{%
+            % if thesis type text is empty
+            {\pgfkeysvalueof{/mt/titlepage/thesis type/@formated}
+            \@mt@titlepage@thesisType@text@GENERATE\\}
+        }{%
+            {\pgfkeysvalueof{/mt/titlepage/thesis type/@formated}\\}
+        }
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/titlepage/legal identifier/text}}{}%
+        }{%
+            % if legal identifier text is empty
+            {\pgfkeysvalueof{/mt/titlepage/legal identifier/@formated}
+            \@mt@titlepage@legalIdentifier@text@GENERATE}
+            \vfil
+        }{%
+            {\pgfkeysvalueof{/mt/titlepage/legal identifier/@formated}}
+            \vfil
+        }
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{titlepage/handed in by/text}}{}%
+        }{%
+            % no handed in by text is specified
+            % nothing to do
+        }{%
+            {\pgfkeysvalueof{/mt/titlepage/handed in by/@formated}\\}%
+        }
+        
+        % author formatted
+        % TO DO: Needs to change font when main document font is snas serif
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/thesis/author/place of birth}}{}
+        }{%
+            {\pgfkeysvalueof{/mt/titlepage/author/@formated}}%
+        }{%
+            { \pgfkeysvalueof{/mt/titlepage/author/@formated}\\[0.125cm]}%
+        }%
+        
+        % place of birth formatted
+        \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/thesis/author/place of birth}}{}
+            }{
+                % no place of birth specified
+                % nothing to do
+            }{%
+                {\pgfkeys{/mt/titlepage/place of birth/@formated}}
+            }%
+        \vfil
 		% \vfil
 		% \usekomavar[\ifstr]{mt::author::number-of-affiliations}{1}{
 		% 	\mtIfKomavarNotEmptyWithOption{mt::institute}
@@ -369,9 +501,16 @@
 		% 	\end{tabular}
 		% }{}
 		
-		% \vfill
-		% {\usekomavar{mt::date}\\}
-		% \vfill
+		\vfill
+		\ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/titlepage/date/text}}{}%
+        }{%
+            % if no title page date text specified
+            % nothing to do
+        }{%
+            {\pgfkeysvalueof{/mt/titlepage/date/@formated}}%
+        }
+		\vfill
 		% \mtIfKomavarNotEmptyWithoutOption{mt::examination-committee}
 		\normalsize\normalfont % set font to document default to prevent any issues futher along
 	\end{titlepage}
@@ -391,28 +530,28 @@
 	\newpage\null\thispagestyle{empty}
 }
 
-% % Setting up document after user settings are available
-% % setting up the pdf meta data
-% \AddToHook{begindocument/end}{
-%     % create pdf title; if no specific pdf title is specified by the user, use thesis title and subtitle.
-%     % If no thesis subtitle is specified, use only thesis title
-%     \ifthenelse{\equal{\pgfkeysvalueof{/mt/pdfmetadata/title}}{}}{% if pdf title key is not set by user to a specific value
-%         \ifthenelse{\equal{\pgfkeysvalueof{/mt/subtitle}}{}}{
-%             \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/title}}
-%         }{
-%             \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/title}~–~\pgfkeysvalueof{/mt/subtitle}}
-%         }
-%     }{%
-%         % pdf title key is specified by user
-%         % nothing to do 
-%     }
+% Setting up document after user settings are available
+% setting up the pdf meta data
+\AddToHook{begindocument/end}{
+    % create pdf title; if no specific pdf title is specified by the user, use thesis title and subtitle.
+    % If no thesis subtitle is specified, use only thesis title
+    \ifthenelse{\equal{\pgfkeysvalueof{/mt/pdfmetadata/title}}{}}{% if pdf title key is not set by user to a specific value
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/thesis/subtitle}}{}}{
+            \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/thesis/title}}
+        }{
+            \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/thesis/title}~–~\pgfkeysvalueof{/mt/thesis/subtitle}}
+        }
+    }{%
+        % pdf title key is specified by user
+        % nothing to do 
+    }
 
-%     % setting the pdf metadata
-%     \hypersetup{
-%         pdftitle={\pgfkeysvalueof{/mt/pdfmetadata/title}},
-%         pdfsubject={\pgfkeysvalueof{/mt/pdfmetadata/subject}},
-%         pdfauthor={\pgfkeysvalueof{/mt/pdfmetadata/author}},
-%         pdfkeywords={\pgfkeysvalueof{/mt/pdfmetadata/keywords}},
-%         pdfcreator={\pgfkeysvalueof{/mt/pdfmetadata/creator}}
-%     }
-% }
+    % setting the pdf metadata
+    \hypersetup{
+        pdftitle={\pgfkeysvalueof{/mt/pdfmetadata/title}},
+        pdfsubject={\pgfkeysvalueof{/mt/pdfmetadata/subject}},
+        pdfauthor={\pgfkeysvalueof{/mt/pdfmetadata/author}},
+        pdfkeywords={\pgfkeysvalueof{/mt/pdfmetadata/keywords}},
+        pdfcreator={\pgfkeysvalueof{/mt/pdfmetadata/creator}}
+    }
+}
