@@ -2,15 +2,47 @@
 
 \usepackage{blindtext}
 
+% sans serif
+% \usepackage{tgtermes}
+% \renewcommand*\familydefault{\sfdefault}
+% fira sans + newtxsf for math
+%	\usepackage[sfdefault]{FiraSans} %% option 'sfdefault' activates Fira Sans as the default text font
+%	\usepackage{newtxsf}
+
+%
+%\usepackage{cmbright} % better math
+
+% broken ttfamily/verb, but math looks good
+%	\usepackage{libertine}
+%	\usepackage{libertinust1math} 
+
+% looks good with math
+%	\usepackage[sc]{mathpazo}
+%	\linespread{1.05} 
+
+% favorite for sans serif
+% math + text looks good, but issue with ttfamily/verb
+\usepackage{newtxtext}
+\usepackage[uprightGreek]{newtxmath} % verify wether uprightGreek option is necessary
+\renewcommand*\familydefault{\sfdefault}
+
+ 
+\def\releaseVersion{0.0.2-alpha-1}
+
 
 \mtSetupComplete{
 	thesis = {
 		title = minimalthesis,
-		subtitle = {Getting started with v0.0.2-alpha},
+		subtitle = {Getting started with v\releaseVersion},
 		type = Dissertation,
 		author = {
 			name = Max Mustermann,
-			place of birth = Munich
+			place of birth = Munich,
+%			affiliation = {University of Beteigeuze, Institute for Experimental Physics, Nanolab},
+			affiliations = {%
+				{University of Beteigeuze, Institute for Experimental Physics, Nanolab},%
+				{University of Jupiter, Institute for Chemistry, Synthesis Lab}%
+			}
 		},
 		examiners = {
 			chairman = Prof. Habakuk Tibatong,
@@ -19,21 +51,21 @@
 		}
 	},
 	pdfmetadata = {
-		subject = {A Quick-Start-Guide for the "minimalthesis" LaTeX Documentclass, Version 0.0.2-alpha.},
-		keywords = {academic-thesis, template, latex, documentclass, minimalthesis, v.0.0.2-alpha, quick-start-guide, doc. rev. 0}
+		subject = {A Quick-Start-Guide for the "minimalthesis" LaTeX Documentclass, Version \releaseVersion.},
+		keywords = {academic-thesis, template, latex, documentclass, minimalthesis, v\releaseVersion, quick-start-guide, doc. rev. 0}
 	},
 	titlepage = {
 		logo = {
 			object type = image,
 			file path = ./class/img/minimalthesis_logo.pdf,
-			height = 10 cm
-		}
+			height = 8 cm % 10 cm
+		},
+		author affiliations/listing style = rows
 	}
 }
 
 \begin{document}
 	\mtTitlepage
 %	\mtTOC
-%	
 %	\input{./minimalthesis_v0-0-2-alpha_getting-started_content.tex}
 \end{document}

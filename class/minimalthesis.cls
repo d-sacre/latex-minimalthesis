@@ -2,7 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% start of file `minimalthesis.cls'.                                %%
 %%                                                                   %%
-%% version: v0.0.2-alpha                                             %%
+%% version: v0.0.2-alpha-1                                            %%
 %% status: alpha                                                     %%
 %% file version: 2023-11-XX                                          %%
 %%                                                                   %%
@@ -25,7 +25,7 @@
 
 % \setcounter{errorcontextlines}{100}
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesClass{./class/minimalthesis}[2023-11-30 v0.0.2-alpha Daniel Sacré LaTeX Project Public License version 1.3c]
+\ProvidesClass{./class/minimalthesis}[2023-11-30 v0.0.2-alpha-1 Daniel Sacré LaTeX Project Public License version 1.3c]
 
 \DeclareOption*{\OptionNotUsed}
 \ProcessOptions\relax
@@ -144,9 +144,68 @@
         }{}%
     }
 
+    \newcommand{\@mt@titlepage@affiliation@formated}{
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style}}{rows}%
+        }{%
+            % listing style rows; simply return input with styling applied
+            \pgfkeysvalueof{/mt/thesis/author/affiliation}%
+        }{%
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style}}{cols}%
+            }{%
+                % listing style columns
+                \pgfkeys{body loop/.code={{##1}\\},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliation}}%
+            }{%
+                UNKOWN OPTION
+            }
+        }
+    }
+
+    \newcommand{\@mt@titlepage@affiliations@singleElementLoop}[2]{
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style}}{rows}%
+        }{%
+            % listing style rows; simply return input with styling applied
+            {#1\\}%
+        }{%
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style}}{cols}%
+            }{%
+                % listing style columns
+                \begin{minipage}[t]{0.45\linewidth}
+                    \centering
+                    \foreach \element in {#1}{\element\\}%
+                \end{minipage}
+                \hfil
+            }{%
+                UNKOWN OPTION
+            }
+        }
+    }
+
+    \newcommand{\@mt@titlepage@affiliations@formated}{%
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style}}{cols}%
+        }{%
+            % calculation of number of affiliations
+            \newcounter{@mt@tmp@counter}
+            \setcounter{@mt@tmp@counter}{0}
+            \pgfkeys{body loop/.code={\stepcounter{@mt@tmp@counter}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliations}}%
+            \begin{minipage}{\pgfkeysvalueof{/mt/titlepage/author affiliations/column container width}}
+                \centering
+                \hfil
+                \pgfkeys{body loop/.code={\@mt@titlepage@affiliations@singleElementLoop{##1}{0.5}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliations}}%
+            \end{minipage}
+        }{%
+            \pgfkeys{body loop/.code={\@mt@titlepage@affiliations@singleElementLoop{##1}{0.5}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliations}}%
+        }
+    }%
+
     \newcommand{\@mt@titlepage@examinationCommittee@reviewers@formated}{%
         \pgfkeys{body loop/.code={\\{\raggedright\the@mt@thesis@titlepage@reviewers@counter.~Reviewer:} \hfill {\raggedleft{##1}}\stepcounter{@mt@thesis@titlepage@reviewers@counter}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/examiners/reviewers}}%
     }%
+
 
     \pgfkeys{%
         /handlers/.is setter/.code=\pgfkeysedef{\pgfkeyscurrentpath}{%
@@ -160,6 +219,8 @@
             thesis/author/.is setter,
                 thesis/author/name/.initial,
                 thesis/author/place of birth/.initial,
+                thesis/author/affiliation/.initial,
+                thesis/author/affiliations/.initial,
             thesis/type/.initial,
             thesis/date/.initial = \today,
             thesis/examiners/.is setter,
@@ -171,7 +232,7 @@
             pdfmetadata/subject/.initial = {Academic Thesis},
             pdfmetadata/author/.initial  = \pgfkeysvalueof{/mt/thesis/author/name},
             pdfmetadata/keywords/.initial = {Academic Thesis},
-            pdfmetadata/creator/.initial = {LaTeX with minimalthesis v0.0.2-alpha and hyperref},
+            pdfmetadata/creator/.initial = {LaTeX with minimalthesis v0.0.2-alpha-1 and hyperref},
         titlepage/.is setter,
             titlepage/title/.is setter,
                 titlepage/title/text/.initial = \pgfkeysvalueof{/mt/thesis/title},
@@ -279,6 +340,9 @@
                     \color{\pgfkeysvalueof{/mt/titlepage/place of birth/font/color}}%
                     \pgfkeysvalueof{/mt/titlepage/place of birth/text}%
                 },%
+            titlepage/author affiliations/.is setter,
+                titlepage/author affiliations/listing style/.initial = rows,
+                titlepage/author affiliations/column container width/.initial = \linewidth,
             titlepage/date/.is setter,%
                 titlepage/date/text/.initial = \pgfkeysvalueof{/mt/thesis/date},
                 titlepage/date/font/.is setter,
@@ -514,22 +578,30 @@
             }{%
                 {\pgfkeys{/mt/titlepage/place of birth/@formated}}
             }%
-        \vfil
-		% \vfil
-		% \usekomavar[\ifstr]{mt::author::number-of-affiliations}{1}{
-		% 	\mtIfKomavarNotEmptyWithOption{mt::institute}
-		% 	\mtIfKomavarNotEmptyWithOption{mt::faculty}
-		% 	\mtIfKomavarNotEmptyWithOption{mt::group}
-		% }{}
-		
-		% \usekomavar[\ifstr]{mt::author::number-of-affiliations}{2}{
-		% 	\begin{tabular}{m{0.45\linewidth}<{\centering}m{0.45\linewidth}<{\centering}}
-		% 		\mtIfKomavarNotEmptyWithOptionTABLE{mt::institute}
-		% 		\mtIfKomavarNotEmptyWithOptionTABLE{mt::faculty}
-		% 		\mtIfKomavarNotEmptyWithOptionTABLE{mt::group}
-		% 	\end{tabular}
-		% }{}
-		
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style}}{rows}
+        }{%
+            \vfil%
+        }{%
+            \vfill%
+        }
+		\ifthenelse{
+            \equal{\pgfkeysvalueof{/mt/thesis/author/affiliations}}{}
+        }{%
+            % no author multiple affiliations specified
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/thesis/author/affiliation}}{}
+            }{%
+                % no single affiliation specified
+                % nothing to do
+            }{%
+                % single author affiliation specified
+                \@mt@titlepage@affiliation@formated%
+            }
+        }{%
+            % if author affiliations specified
+            \@mt@titlepage@affiliations@formated%
+        }
 		\vfill
 		\ifthenelse{%
             \equal{\pgfkeysvalueof{/mt/titlepage/date/text}}{}%
