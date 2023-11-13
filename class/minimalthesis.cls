@@ -147,7 +147,8 @@
                 % listing style columns
                 \pgfkeys{body loop/.code={{##1}\\},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliation}}%
             }{%
-                UNKOWN OPTION
+                UNKOWN OPTION %
+                % needs error message
             }
         }
     }
@@ -179,7 +180,8 @@
                 \end{minipage}
                 \hfil
             }{%
-                UNKOWN OPTION
+                UNKOWN OPTION%
+                % needs error message
             }
         }
     }
@@ -204,7 +206,26 @@
     }%
 
     \newcommand{\@mt@titlepage@examinationCommittee@reviewers@formated}{%
-        \pgfkeys{body loop/.code={\\{\raggedright\the@mt@thesis@titlepage@reviewers@counter.~Reviewer:} \hfill {\raggedleft{##1}}\stepcounter{@mt@thesis@titlepage@reviewers@counter}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/examiners/reviewers}}%
+        \pgfkeys{body loop/.code={%
+                \\{%
+                    \raggedright%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/descriptor/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/descriptor/font/size}
+                    \@mt@titlepage@examinationCommittee@reviewers@descriptor@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/descriptor/font/color}}%
+                    \the@mt@thesis@titlepage@reviewers@counter.~%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/descriptor/text}%
+                } \hfill {%
+                    \raggedleft
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/names/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/names/font/size}
+                    \@mt@titlepage@examinationCommittee@reviewers@names@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/names/font/color}}%
+                    {##1}%
+                }\stepcounter{@mt@thesis@titlepage@reviewers@counter}
+            },%
+            body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/examiners/reviewers}%
+        }%
     }%
 
     % macros for storing titlepage font weight data
@@ -218,6 +239,12 @@
     \newcommand{\@mt@titlepage@authorAffiliations@font@weight}{}
     \newcommand{\@mt@titlepage@date@font@weight}{}
     \newcommand{\@mt@titlepage@examinationCommittee@title@font@weight}{\bfseries}
+    \newcommand{\@mt@titlepage@examinationCommittee@chairman@descriptor@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@chairman@name@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@reviewers@descriptor@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@reviewers@names@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@additionalExaminer@descriptor@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@additionalExaminer@name@font@weight}{}
 
     % pgfkeys setup
     \pgfkeys{%
@@ -345,7 +372,8 @@
                     \pgfkeysvalueof{/mt/titlepage/author/text}%
                 },%
             titlepage/place of birth/.is setter,%
-                titlepage/place of birth/text/.initial = from \pgfkeysvalueof{/mt/thesis/author/place of birth},
+                titlepage/place of birth/prefix/.initial = {born in},
+                titlepage/place of birth/text/.initial = {\pgfkeysvalueof{/mt/titlepage/place of birth/prefix}~\pgfkeysvalueof{/mt/thesis/author/place of birth}},
                 titlepage/place of birth/font/.is setter,
                     titlepage/place of birth/font/family/.initial = \normalfont,
                     titlepage/place of birth/font/size/.initial = \large,
@@ -387,12 +415,56 @@
             titlepage/examination committee/.is setter,%
                 titlepage/examination committee/width/.initial = 0.66\linewidth,
                 titlepage/examination committee/title/.is setter,
-                    titlepage/examination committee/title/text/.initial = Examination Committee:,
+                    titlepage/examination committee/title/text/.initial = {Examination Committee:},
+                    titlepage/examination committee/title/padding/.is setter,
+                        titlepage/examination committee/title/padding/vertical/.initial = {0.125cm},
                     titlepage/examination committee/title/font/.is setter,
                         titlepage/examination committee/title/font/family/.initial = \normalfont,
                         titlepage/examination committee/title/font/size/.initial = \normalsize,
                         titlepage/examination committee/title/font/weight/.store in = \@mt@titlepage@examinationCommittee@title@font@weight,
                         titlepage/examination committee/title/font/color/.initial = black,
+                    titlepage/examination committee/chairman/.is setter,
+                        titlepage/examination committee/chairman/descriptor/.is setter,
+                            titlepage/examination committee/chairman/descriptor/text/.initial = {Chairman:},
+                            titlepage/examination committee/chairman/descriptor/font/.is setter,
+                                titlepage/examination committee/chairman/descriptor/font/family/.initial = \normalfont,
+                                titlepage/examination committee/chairman/descriptor/font/size/.initial = \normalsize,
+                                titlepage/examination committee/chairman/descriptor/font/weight/.store in = \@mt@titlepage@examinationCommittee@chairman@descriptor@font@weight,
+                                titlepage/examination committee/chairman/descriptor/font/color/.initial = black,
+                        titlepage/examination committee/chairman/name/.is setter,
+                            titlepage/examination committee/chairman/name/font/.is setter,
+                                titlepage/examination committee/chairman/name/font/family/.initial = \normalfont,
+                                titlepage/examination committee/chairman/name/font/size/.initial = \normalsize,
+                                titlepage/examination committee/chairman/name/font/weight/.store in = \@mt@titlepage@examinationCommittee@chairman@name@font@weight,
+                                titlepage/examination committee/chairman/name/font/color/.initial = black,
+                    titlepage/examination committee/reviewers/.is setter,
+                        titlepage/examination committee/reviewers/descriptor/.is setter,
+                            titlepage/examination committee/reviewers/descriptor/text/.initial = {Reviewer:},
+                            titlepage/examination committee/reviewers/descriptor/font/.is setter,
+                                titlepage/examination committee/reviewers/descriptor/font/family/.initial = \normalfont,
+                                titlepage/examination committee/reviewers/descriptor/font/size/.initial = \normalsize,
+                                titlepage/examination committee/reviewers/descriptor/font/weight/.store in = \@mt@titlepage@examinationCommittee@reviewers@descriptor@font@weight,
+                                titlepage/examination committee/reviewers/descriptor/font/color/.initial = black,
+                        titlepage/examination committee/reviewers/names/.is setter,
+                            titlepage/examination committee/reviewers/names/font/.is setter,
+                                titlepage/examination committee/reviewers/names/font/family/.initial = \normalfont,
+                                titlepage/examination committee/reviewers/names/font/size/.initial = \normalsize,
+                                titlepage/examination committee/reviewers/names/font/weight/.store in = \@mt@titlepage@examinationCommittee@reviewers@names@font@weight,
+                                titlepage/examination committee/reviewers/names/font/color/.initial = black,
+                    titlepage/examination committee/additional examiner/.is setter,
+                        titlepage/examination committee/additional examiner/descriptor/.is setter,
+                            titlepage/examination committee/additional examiner/descriptor/text/.initial = {Additional Examiner:},
+                            titlepage/examination committee/additional examiner/descriptor/font/.is setter,
+                                titlepage/examination committee/additional examiner/descriptor/font/family/.initial = \normalfont,
+                                titlepage/examination committee/additional examiner/descriptor/font/size/.initial = \normalsize,
+                                titlepage/examination committee/additional examiner/descriptor/font/weight/.store in = \@mt@titlepage@examinationCommittee@additionalExaminer@descriptor@font@weight,
+                                titlepage/examination committee/additional examiner/descriptor/font/color/.initial = black,
+                        titlepage/examination comittee/additional examiner/name/.is setter,  
+                            titlepage/examination committee/additional examiner/name/font/.is setter,
+                                titlepage/examination committee/additional examiner/name/font/family/.initial = \normalfont,
+                                titlepage/examination committee/additional examiner/name/font/size/.initial = \normalsize,
+                                titlepage/examination committee/additional examiner/name/font/weight/.store in = \@mt@titlepage@examinationCommittee@additionalExaminer@name@font@weight,
+                                titlepage/examination committee/additional examiner/name/font/color/.initial = black,
                 titlepage/examination committee/title/@formated/.initial = {%
                     \pgfkeysvalueof{/mt/titlepage/examination committee/title/font/family}%
                     \pgfkeysvalueof{/mt/titlepage/examination committee/title/font/size}%
@@ -400,7 +472,7 @@
                     \color{\pgfkeysvalueof{/mt/titlepage/examination committee/title/font/color}}%
                     \pgfkeysvalueof{/mt/titlepage/examination committee/title/text}%
                 },%
-                titlepage/examination comittee/reviewers/@formated/.initial = \pgfkeys{body loop/.code={\\\the@mt@thesis@titlepage@reviewers@counter.~Reviewer: #1 \stepcounter{@mt@thesis@titlepage@reviewers@counter}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/examiners/reviewers}}
+                % titlepage/examination comittee/reviewers/
     }
 
     % \newcommand*\@mt@pgfkeys@setup@TEMPLATE[2]{\pgfqkeys{#1}{#2}}
@@ -422,16 +494,12 @@
 \RequirePackage{scrlayer-scrpage}
 \pagestyle{scrheadings}
 
-
 \clearpairofpagestyles
-
 \automark[section]{chapter}
-
 
 \clearmainofpairofpagestyles
 \chead{\small\rightorleftmark}
 \cfoot[\pagemark]{\pagemark} %Seitenzahl zentriert im Fuß
-
 
 \makeatletter
     \newcommand{\rightorleftmark}{%
@@ -501,7 +569,7 @@
 \usepgfplotslibrary{external}
 \tikzexternalize[prefix=tikzexternalize/]
 
-\RequirePackage{listings}
+% \RequirePackage{listings} % only if code snippets to be shown
 \RequirePackage[labelfont={bf}]{caption}
 \captionsetup{format=plain,labelformat=simple,font=small,labelsep = colon}
 
@@ -645,14 +713,30 @@
         }{%
             \setcounter{@mt@thesis@titlepage@reviewers@counter}{1}
             \begin{minipage}{\pgfkeysvalueof{/mt/titlepage/examination committee/width}}
-                {\raggedright\pgfkeysvalueof{/mt/titlepage/examination committee/title/@formated}\\}
+                {\raggedright\pgfkeysvalueof{/mt/titlepage/examination committee/title/@formated}\\[\pgfkeysvalueof{/mt/titlepage/examination committee/title/padding/vertical}]}
                 \ifthenelse{%
                     \equal{\pgfkeysvalueof{/mt/thesis/examiners/chairman}}{}%
                 }{%
                     % if no chairman specified
                     % nothing to do
                 }{%
-                    {\raggedright Chairman:} \hfill {\raggedleft\pgfkeysvalueof{/mt/thesis/examiners/chairman}}%
+                    {%
+                        \raggedright%
+                        \pgfkeysvalueof{/mt/titlepage/examination committee/chairman/descriptor/font/family}%
+                        \pgfkeysvalueof{/mt/titlepage/examination committee/chairman/descriptor/font/size}%
+                        \@mt@titlepage@examinationCommittee@chairman@descriptor@font@weight%
+                        \color{\pgfkeysvalueof{/mt/titlepage/examination committee/chairman/descriptor/font/color}}%
+                        \pgfkeysvalueof{/mt/titlepage/examination committee/chairman/descriptor/text}%
+                    }%
+                    \hfill%
+                    {%
+                        \raggedleft%
+                        \pgfkeysvalueof{/mt/titlepage/examination committee/chairman/name/font/family}%
+                        \pgfkeysvalueof{/mt/titlepage/examination committee/chairman/name/font/size}%
+                        \@mt@titlepage@examinationCommittee@chairman@name@font@weight%
+                        \color{\pgfkeysvalueof{/mt/titlepage/examination committee/chairman/name/font/color}}%
+                        \pgfkeysvalueof{/mt/thesis/examiners/chairman}%
+                    }%
                 }%
                 \ifthenelse{%
                     \equal{\pgfkeysvalueof{/mt/thesis/examiners/reviewers}}{}%
@@ -669,7 +753,24 @@
                     % no additional reviewer specified
                     % nothing to do
                 }{%
-                   {\\\raggedright Additional Examiner:} \hfill {\raggedleft\pgfkeysvalueof{/mt/thesis/examiners/additional}}
+                   {%
+                        \\%
+                        \raggedright%
+                        \pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/descriptor/font/family}%
+                        \pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/descriptor/font/size}%
+                        \@mt@titlepage@examinationCommittee@additionalExaminer@descriptor@font@weight%
+                        \color{\pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/descriptor/font/color}}%
+                        \pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/descriptor/text}%
+                    } 
+                    \hfill 
+                    {%
+                        \raggedleft%
+                        \pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/name/font/family}%
+                        \pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/name/font/size}%
+                        \@mt@titlepage@examinationCommittee@additionalExaminer@name@font@weight%
+                        \color{\pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/name/font/color}}%
+                        \pgfkeysvalueof{/mt/thesis/examiners/additional}%
+                    }
                 }%
             \end{minipage}
      
