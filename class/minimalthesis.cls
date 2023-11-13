@@ -112,25 +112,25 @@
     }
 
     \newcommand{\@mt@titlepage@legalIdentifier@text@GENERATE}{
-        To obtain the Academic Degree\\
+        \pgfkeysvalueof{/mt/titlepage/legal identifier/prefix}\\
         \ifthenelse{%
             \equal{\pgfkeysvalueof{/mt/thesis/type}}{Bachelor}%
         }{%
-            \enquote{Bachelor of Science (B.Sc.)}%
+            \enquote{\pgfkeysvalueof{/mt/academic degree identifiers/bachelor}}%
         }{}%
         \ifthenelse{%
             \equal{\pgfkeysvalueof{/mt/thesis/type}}{Master}%
         }{%
-            \enquote{Master of Science (M.Sc.)}%
+            \enquote{\pgfkeysvalueof{/mt/academic degree identifiers/master}}%
         }{}%
         \ifthenelse{\equal{\pgfkeysvalueof{/mt/thesis/type}}{Dissertation}}{%
-            \enquote{Philosophical Doctor (PhD)}%
+            \enquote{\pgfkeysvalueof{/mt/academic degree identifiers/phd}}%
         }{}%
         \ifthenelse{\equal{\pgfkeysvalueof{/mt/thesis/type}}{Doctoral}}{%
-            \enquote{Philosophical Doctor (PhD)}%
+            \enquote{\pgfkeysvalueof{/mt/academic degree identifiers/phd}}%
         }{}%
         \ifthenelse{\equal{\pgfkeysvalueof{/mt/thesis/type}}{PhD}}{%
-            \enquote{Philosophical Doctor (PhD)}%
+            \enquote{\pgfkeysvalueof{/mt/academic degree identifiers/phd}}%
         }{}%
     }
 
@@ -240,6 +240,10 @@
                 thesis/examiners/chairman/.initial,
                 thesis/examiners/reviewers/.initial,
                 thesis/examiners/additional/.initial,
+        academic degree identifiers/.is setter,
+            academic degree identifiers/bachelor/.initial = {Bachelor of Science (B.Sc.)},
+            academic degree identifiers/master/.initial = {Master of Science (M.Sc.)},
+            academic degree identifiers/phd/.initial = {Philosophical Doctor (PhD)},
         pdfmetadata/.is setter,
             pdfmetadata/title/.initial,
             pdfmetadata/subject/.initial = {Academic Thesis},
@@ -298,7 +302,8 @@
                     \pgfkeysvalueof{/mt/titlepage/thesis type/text}%
                 },
             titlepage/legal identifier/.is setter,% 
-                titlepage/legal identifier/text/.initial, 
+                titlepage/legal identifier/text/.initial,
+                titlepage/legal identifier/prefix/.initial = To obtain the Academic Degree,
                 titlepage/legal identifier/font/.is setter,
                     titlepage/legal identifier/font/family/.initial = \normalfont, % needs to be changed if main document font is set to sans serif
                     titlepage/legal identifier/font/size/.initial = \large,
