@@ -22,6 +22,7 @@
         /handlers/.is setter/.code=\pgfkeysedef{\pgfkeyscurrentpath}{%
             \noexpand\pgfqkeys{\pgfkeyscurrentpath}{##1}%
         },%
+        /handlers/.colordef/.code = {},
         /mt/.cd,%
         thesis/.is setter,
             thesis/title/.initial,%
@@ -40,6 +41,25 @@
                 thesis/examiners/additional/.initial,
         visual styling/.is setter,
             visual styling/default font/.initial = serif,
+            visual styling/color scheme/.is setter,
+                visual styling/color scheme/type/.initial = plain,
+                visual styling/color scheme/colors/.is setter,
+                    visual styling/color scheme/colors/accent/.is setter,
+                        visual styling/color scheme/colors/accent/primary/.is setter,
+                            visual styling/color scheme/colors/accent/primary/set/.initial,
+                            visual styling/color scheme/colors/accent/primary/define/.is setter,
+                                visual styling/color scheme/colors/accent/primary/define/color model/.initial,
+                                visual styling/color scheme/colors/accent/primary/define/color value/.initial,
+                        visual styling/color scheme/colors/accent/secondary/.is setter,
+                            visual styling/color scheme/colors/accent/secondary/set/.initial,
+                            visual styling/color scheme/colors/accent/secondary/define/.is setter,
+                                visual styling/color scheme/colors/accent/secondary/define/color model/.initial,
+                                visual styling/color scheme/colors/accent/secondary/define/color value/.initial,
+                        visual styling/color scheme/colors/accent/tertiary/.is setter,
+                            visual styling/color scheme/colors/accent/tertiary/set/.initial,
+                            visual styling/color scheme/colors/accent/tertiary/define/.is setter,
+                                visual styling/color scheme/colors/accent/tertiary/define/color model/.initial,
+                                visual styling/color scheme/colors/accent/tertiary/define/color value/.initial,
         bibliography/.is setter,
             bibliography/file path/.initial,
         academic degree identifiers/.is setter,

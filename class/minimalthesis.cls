@@ -42,9 +42,18 @@
     headsepline,
 ]{scrreprt}
 
+% colors
 \RequirePackage[dvipsnames]{xcolor} % needs to be loaded here to avoid issues due to options clash with pgf
+ % Definition of minimal thesis accent colors
+ \definecolor{mtColorsAccentPrimary}{HTML}{000000}
+ \definecolor{mtColorsAccentSecondary}{HTML}{000000}
+ \definecolor{mtColorsAccentTertiary}{HTML}{000000}
+
 \RequirePackage{ifthen, etoolbox}
 \RequirePackage{pgfkeys, pgffor,pgf}
+
+% load utilities
+\input{./class/utils/minimalthesis_set-accent-color.tex}
 
 % load pgfkeys setup
 \input{./class/pgfkeys/minimalthesis_pgfkeys.setup}
@@ -169,8 +178,10 @@
 \input{./class/pages/toc/minimalthesis_toc.def}
 \newcommand{\mtGenerateBibliography}{\printbibliography}
 
+
+
 \AddToHook{begindocument/before}{
-        % Passing options to packages
+    % Passing options to packages
         % geometry package
         \ifthenelse{%
             \equal{\pgfkeysvalueof{/mt/debug/show margins}}{true}%
@@ -198,36 +209,44 @@
         \equal{\pgfkeysvalueof{/mt/visual styling/default font}}{sans-serif}
     }{%
         \RequirePackage{newtxtext}
-        \RequirePackage[uprightGreek]{newtxmath} % TO DO: verify wether uprightGreek option is necessary
+        \RequirePackage[uprightGreek]{newtxmath} % TO DO: verify whether uprightGreek option is necessary
         \renewcommand*\familydefault{\sfdefault}
     }{%
         \RequirePackage{lmodern}
         \RequirePackage{microtype}
     }
+
+    % defining the accent colors
+    % \makeatletter
+        % no @ in macro name/makeatletter allowed in \AddToHook{begindocument/before}{...}
+        % \@mt@visualStyling@colorScheme@setAccentColor
+        \mtVisualStylingColorSchemeSetAccentColor{primary}{mtColorsAccentPrimary}{black!50!gray}
+        \mtVisualStylingColorSchemeSetAccentColor{secondary}{mtColorsAccentSecondary}{black!25!gray}
+        \mtVisualStylingColorSchemeSetAccentColor{tertiary}{mtColorsAccentTertiary}{gray}
+    % \makeatother
 }
 
-% Setting up document after user settings are available
-% setting up the pdf meta data
 \AddToHook{begindocument/end}{
-    % create pdf title; if no specific pdf title is specified by the user, use thesis title and subtitle.
-    % If no thesis subtitle is specified, use only thesis title
-    \ifthenelse{\equal{\pgfkeysvalueof{/mt/pdfmetadata/title}}{}}{% if pdf title key is not set by user to a specific value
-        \ifthenelse{\equal{\pgfkeysvalueof{/mt/thesis/subtitle}}{}}{
-            \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/thesis/title}}
-        }{
-            \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/thesis/title}~–~\pgfkeysvalueof{/mt/thesis/subtitle}}
+    % creation and setup of the pdf meta data
+        % create pdf title; if no specific pdf title is specified by the user, use thesis title and subtitle.
+        % If no thesis subtitle is specified, use only thesis title
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/pdfmetadata/title}}{}}{% if pdf title key is not set by user to a specific value
+            \ifthenelse{\equal{\pgfkeysvalueof{/mt/thesis/subtitle}}{}}{
+                \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/thesis/title}}
+            }{
+                \pgfkeyssetvalue{/mt/pdfmetadata/title}{\pgfkeysvalueof{/mt/thesis/title}~–~\pgfkeysvalueof{/mt/thesis/subtitle}}
+            }
+        }{%
+            % pdf title key is specified by user
+            % nothing to do 
         }
-    }{%
-        % pdf title key is specified by user
-        % nothing to do 
-    }
 
-    % setting the pdf metadata
-    \hypersetup{
-        pdftitle={\pgfkeysvalueof{/mt/pdfmetadata/title}},
-        pdfsubject={\pgfkeysvalueof{/mt/pdfmetadata/subject}},
-        pdfauthor={\pgfkeysvalueof{/mt/pdfmetadata/author}},
-        pdfkeywords={\pgfkeysvalueof{/mt/pdfmetadata/keywords}},
-        pdfcreator={\pgfkeysvalueof{/mt/pdfmetadata/creator}}
-    }
+        % setting the pdf metadata
+        \hypersetup{
+            pdftitle={\pgfkeysvalueof{/mt/pdfmetadata/title}},
+            pdfsubject={\pgfkeysvalueof{/mt/pdfmetadata/subject}},
+            pdfauthor={\pgfkeysvalueof{/mt/pdfmetadata/author}},
+            pdfkeywords={\pgfkeysvalueof{/mt/pdfmetadata/keywords}},
+            pdfcreator={\pgfkeysvalueof{/mt/pdfmetadata/creator}}
+        }
 }
