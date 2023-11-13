@@ -1,0 +1,10 @@
+\newcommand{\mtGenerateTOC}{
+	\newgeometry{left=3cm,right=2.5cm,top=2.75cm,bottom=2.75cm}
+	{
+		\renewcommand{\rightorleftmark}{appendix}
+		\tableofcontents
+	}
+	
+	\newgeometry{twoside,outer=2.5cm,inner=3.5cm,top=2cm,bottom=2cm,includeheadfoot}
+	\newpage\null\thispagestyle{empty}
+}
