@@ -42,8 +42,9 @@
     headsepline,
 ]{scrreprt}
 
+\RequirePackage[dvipsnames]{xcolor} % needs to be loaded here to avoid issues due to options clash with pgf
 \RequirePackage{ifthen, etoolbox}
-\RequirePackage{pgfkeys, pgffor}
+\RequirePackage{pgfkeys, pgffor,pgf}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% only for testing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % source: https://tex.stackexchange.com/questions/700759/pgfkeys-is-it-possible-to-achieve-a-dictionary-like-input-method-for-subkeys
@@ -62,17 +63,6 @@
 % }
 
 \makeatletter
-    % macros for storing titlepage font weight data
-    \newcommand{\@mt@titlepage@title@font@weight}{\bfseries}
-    \newcommand{\@mt@titlepage@subtitle@font@weight}{\bfseries}
-    \newcommand{\@mt@titlepage@thesisType@font@weight}{}
-    \newcommand{\@mt@titlepage@legalIdentifier@font@weight}{}
-    \newcommand{\@mt@titlepage@handedInBy@font@weight}{}
-    \newcommand{\@mt@titlepage@author@font@weight}{}
-    \newcommand{\@mt@titlepage@placeOfBirth@font@weight}{}
-    \newcommand{\@mt@titlepage@date@font@weight}{}
-    \newcommand{\@mt@titlepage@examinationCommittee@title@font@weight}{\bfseries}
-
     % counters
     \newcounter{@mt@thesis@titlepage@reviewers@counter}
 
@@ -146,13 +136,13 @@
 
     \newcommand{\@mt@titlepage@affiliation@formated}{
         \ifthenelse{%
-            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style}}{rows}%
+            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/alignment}}{rows}%
         }{%
             % listing style rows; simply return input with styling applied
             \pgfkeysvalueof{/mt/thesis/author/affiliation}%
         }{%
             \ifthenelse{%
-                \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style}}{cols}%
+                \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/alignment}}{cols}%
             }{%
                 % listing style columns
                 \pgfkeys{body loop/.code={{##1}\\},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliation}}%
@@ -164,17 +154,27 @@
 
     \newcommand{\@mt@titlepage@affiliations@singleElementLoop}[2]{
         \ifthenelse{%
-            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style}}{rows}%
+            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/alignment}}{rows}%
         }{%
             % listing style rows; simply return input with styling applied
-            {#1\\}%
+            {%
+                \pgfkeysvalueof{/mt/titlepage/author affiliations/font/family/}%
+                \pgfkeysvalueof{/mt/titlepage/author affiliations/font/size}%
+                \color{\pgfkeysvalueof{/mt/titlepage/author affiliations/font/color}}%
+                \@mt@titlepage@authorAffiliations@font@weight%
+                #1\\%
+            }%
         }{%
             \ifthenelse{%
-                \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style}}{cols}%
+                \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/alignment}}{cols}%
             }{%
                 % listing style columns
-                \begin{minipage}[t]{0.45\linewidth}
+                \begin{minipage}[t]{\@mt@titlepage@affiliations@subcontainer@width\linewidth}
                     \centering
+                    \pgfkeysvalueof{/mt/titlepage/author affiliations/font/family/}%
+                    \pgfkeysvalueof{/mt/titlepage/author affiliations/font/size}%
+                    \color{\pgfkeysvalueof{/mt/titlepage/author affiliations/font/color}}%
+                    \@mt@titlepage@authorAffiliations@font@weight%
                     \foreach \element in {#1}{\element\\}%
                 \end{minipage}
                 \hfil
@@ -186,19 +186,20 @@
 
     \newcommand{\@mt@titlepage@affiliations@formated}{%
         \ifthenelse{%
-            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style}}{cols}%
+            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/alignment}}{cols}%
         }{%
             % calculation of number of affiliations
             \newcounter{@mt@tmp@counter}
             \setcounter{@mt@tmp@counter}{0}
             \pgfkeys{body loop/.code={\stepcounter{@mt@tmp@counter}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliations}}%
-            \begin{minipage}{\pgfkeysvalueof{/mt/titlepage/author affiliations/column container width}}
+            \pgfmathsetmacro{\@mt@titlepage@affiliations@subcontainer@width}{(1/\the@mt@tmp@counter)*\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/column entry width factor}}
+            \begin{minipage}{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/column container width}}
                 \centering
                 \hfil
-                \pgfkeys{body loop/.code={\@mt@titlepage@affiliations@singleElementLoop{##1}{0.5}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliations}}%
+                \pgfkeys{body loop/.code={\@mt@titlepage@affiliations@singleElementLoop{##1}{\@mt@titlepage@affiliations@subcontainer@width}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliations}}%
             \end{minipage}
         }{%
-            \pgfkeys{body loop/.code={\@mt@titlepage@affiliations@singleElementLoop{##1}{0.5}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliations}}%
+            \pgfkeys{body loop/.code={\@mt@titlepage@affiliations@singleElementLoop{##1}{\@mt@titlepage@affiliations@subcontainer@width}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliations}}%
         }
     }%
 
@@ -206,7 +207,19 @@
         \pgfkeys{body loop/.code={\\{\raggedright\the@mt@thesis@titlepage@reviewers@counter.~Reviewer:} \hfill {\raggedleft{##1}}\stepcounter{@mt@thesis@titlepage@reviewers@counter}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/examiners/reviewers}}%
     }%
 
+    % macros for storing titlepage font weight data
+    \newcommand{\@mt@titlepage@title@font@weight}{\bfseries}
+    \newcommand{\@mt@titlepage@subtitle@font@weight}{\bfseries}
+    \newcommand{\@mt@titlepage@thesisType@font@weight}{}
+    \newcommand{\@mt@titlepage@legalIdentifier@font@weight}{}
+    \newcommand{\@mt@titlepage@handedInBy@font@weight}{}
+    \newcommand{\@mt@titlepage@author@font@weight}{}
+    \newcommand{\@mt@titlepage@placeOfBirth@font@weight}{}
+    \newcommand{\@mt@titlepage@authorAffiliations@font@weight}{}
+    \newcommand{\@mt@titlepage@date@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@title@font@weight}{\bfseries}
 
+    % pgfkeys setup
     \pgfkeys{%
         /handlers/.is setter/.code=\pgfkeysedef{\pgfkeyscurrentpath}{%
             \noexpand\pgfqkeys{\pgfkeyscurrentpath}{##1}%
@@ -341,8 +354,17 @@
                     \pgfkeysvalueof{/mt/titlepage/place of birth/text}%
                 },%
             titlepage/author affiliations/.is setter,
-                titlepage/author affiliations/listing style/.initial = rows,
-                titlepage/author affiliations/column container width/.initial = \linewidth,
+                titlepage/author affiliations/font/.is setter,
+                    titlepage/author affiliations/font/family/.initial = \normalfont,
+                    titlepage/author affiliations/font/size/.initial = \normalsize,
+                    titlepage/author affiliations/font/weight/.store in = \@mt@titlepage@authorAffiliations@font@weight,
+                    titlepage/author affiliations/font/color/.initial = black,
+                titlepage/author affiliations/listing style/.is setter,
+                    titlepage/author affiliations/listing style/alignment/.initial = rows,
+                    titlepage/author affiliations/listing style/padding/.is setter, 
+                        titlepage/author affiliations/listing style/padding/vertical/.initial = {\ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/alignment}}{rows}}{\vfil}{\vfill}},
+                    titlepage/author affiliations/listing style/column container width/.initial = \linewidth,
+                    titlepage/author affiliations/listing style/column entry width factor/.initial = 0.75,
             titlepage/date/.is setter,%
                 titlepage/date/text/.initial = \pgfkeysvalueof{/mt/thesis/date},
                 titlepage/date/font/.is setter,
@@ -445,7 +467,7 @@
 \makeatother
 
 % usepackages related to graphics
-\RequirePackage[dvipsnames]{xcolor}
+% \RequirePackage[dvipsnames]{xcolor}
 \RequirePackage{graphicx}
 \RequirePackage{wrapfig}
 
@@ -576,15 +598,8 @@
                 % no place of birth specified
                 % nothing to do
             }{%
-                {\pgfkeys{/mt/titlepage/place of birth/@formated}}
+                {\pgfkeys{/mt/titlepage/place of birth/@formated}}% peculiarity: setting line break here destroys \vfil(l) for author affiliations
             }%
-        \ifthenelse{%
-            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style}}{rows}
-        }{%
-            \vfil%
-        }{%
-            \vfill%
-        }
 		\ifthenelse{
             \equal{\pgfkeysvalueof{/mt/thesis/author/affiliations}}{}
         }{%
@@ -596,10 +611,12 @@
                 % nothing to do
             }{%
                 % single author affiliation specified
+                \pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/padding/vertical}
                 \@mt@titlepage@affiliation@formated%
             }
         }{%
             % if author affiliations specified
+            \pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/padding/vertical}
             \@mt@titlepage@affiliations@formated%
         }
 		\vfill
