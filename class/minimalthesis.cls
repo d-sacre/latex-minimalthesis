@@ -269,6 +269,8 @@
                 thesis/examiners/additional/.initial,
         visual styling/.is setter,
             visual styling/default font/.initial = serif,
+        bibliography/.is setter,
+            bibliography/file path/.initial,
         academic degree identifiers/.is setter,
             academic degree identifiers/bachelor/.initial = {Bachelor of Science (B.Sc.)},
             academic degree identifiers/master/.initial = {Master of Science (M.Sc.)},
@@ -582,23 +584,21 @@
 \RequirePackage{booktabs,colortbl,array}
 
 % Bibliography
+% REMARK: Can neither be set in \AtEndPreamble, nor \AddToHook{begindocument/before}{...};
+% See: https://github.com/plk/biblatex/issues/1107
 \RequirePackage[
     backend=biber,
     style=chem-angew,
-	articletitle,
+    articletitle,
     % sortlocale=de_DE,
-		% style=apsrev4-1,
-	sorting=none,
+        % style=apsrev4-1,
+    sorting=none,
     natbib=true,
     url=false,
     doi=true,
     eprint=true,
-	maxbibnames=99,
+    maxbibnames=99,
 ]{biblatex}
-
-% needs to be implemented
-% \input{./minimalthesis/minimal-thesis_formatting-bib-entries.tex}
-% \ExecuteBibliographyOptions{thesistitle}
 
 \RequirePackage[hidelinks]{hyperref}
 
@@ -795,8 +795,11 @@
 	\newpage\null\thispagestyle{empty}
 }
 
-\AtEndPreamble{
-    % Passing options to packages
+
+\newcommand{\mtGenerateBibliography}{\printbibliography}
+
+\AddToHook{begindocument/before}{
+        % Passing options to packages
         % geometry package
         \ifthenelse{%
             \equal{\pgfkeysvalueof{/mt/debug/show margins}}{true}%
@@ -806,6 +809,18 @@
             \PassOptionsToPackage{top=1.5cm, bottom=1.5cm, includeheadfoot,asymmetric}{geometry}
         }
         \RequirePackage{geometry}
+
+    % adding the bibliography file
+    \ifthenelse{%
+        \equal{\pgfkeysvalueof{/mt/bibliography/file path}}{}%
+    }{%
+        % no bibliography file specified
+        % nothing to do
+    }{%
+        \input{./class/bib/minimal-thesis_formatting-bib-entries.tex}
+        \ExecuteBibliographyOptions{thesistitle}
+        \addbibresource{\pgfkeysvalueof{/mt/bibliography/file path}}
+    }
 
     % setting the default font of the document
     \ifthenelse{%
