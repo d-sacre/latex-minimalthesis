@@ -37,7 +37,7 @@
     noindent,
     parskip=full,
     twoside,
-    open=any,
+    open= any,
     BCOR=1cm,
     headsepline,
 ]{scrreprt}
@@ -474,7 +474,8 @@
                     \color{\pgfkeysvalueof{/mt/titlepage/examination committee/title/font/color}}%
                     \pgfkeysvalueof{/mt/titlepage/examination committee/title/text}%
                 },%
-                % titlepage/examination comittee/reviewers/
+        debug/.is setter,
+            debug/show margins/.initial = false
     }
 
     % \newcommand*\@mt@pgfkeys@setup@TEMPLATE[2]{\pgfqkeys{#1}{#2}}
@@ -482,7 +483,7 @@
 \makeatother
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\RequirePackage[top=1.5cm, bottom=1.5cm, includeheadfoot,showframe=true,asymmetric]{geometry}
+
 
 \RequirePackage[english]{babel}
 
@@ -795,6 +796,17 @@
 }
 
 \AtEndPreamble{
+    % Passing options to packages
+        % geometry package
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/debug/show margins}}{true}%
+        }{%
+            \PassOptionsToPackage{top=1.5cm, bottom=1.5cm, includeheadfoot,asymmetric,showframe}{geometry}  
+        }{%
+            \PassOptionsToPackage{top=1.5cm, bottom=1.5cm, includeheadfoot,asymmetric}{geometry}
+        }
+        \RequirePackage{geometry}
+
     % setting the default font of the document
     \ifthenelse{%
         \equal{\pgfkeysvalueof{/mt/visual styling/default font}}{sans-serif}
