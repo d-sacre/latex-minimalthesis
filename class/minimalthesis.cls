@@ -267,6 +267,8 @@
                 thesis/examiners/chairman/.initial,
                 thesis/examiners/reviewers/.initial,
                 thesis/examiners/additional/.initial,
+        visual styling/.is setter,
+            visual styling/default font/.initial = serif,
         academic degree identifiers/.is setter,
             academic degree identifiers/bachelor/.initial = {Bachelor of Science (B.Sc.)},
             academic degree identifiers/master/.initial = {Master of Science (M.Sc.)},
@@ -480,6 +482,7 @@
 \makeatother
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage[top=1.5cm, bottom=1.5cm, includeheadfoot,showframe=true,asymmetric]{geometry}
 
 \RequirePackage[english]{babel}
 
@@ -488,8 +491,6 @@
 
 \RequirePackage{csquotes}
 \RequirePackage{enumitem}
-
-\RequirePackage[top=1.5cm, bottom=1.5cm, includeheadfoot,showframe=false,asymmetric]{geometry}
 
 \RequirePackage{scrlayer-scrpage}
 \pagestyle{scrheadings}
@@ -793,14 +794,23 @@
 	\newpage\null\thispagestyle{empty}
 }
 
+\AtEndPreamble{
+    % setting the default font of the document
+    \ifthenelse{%
+        \equal{\pgfkeysvalueof{/mt/visual styling/default font}}{sans-serif}
+    }{%
+        \RequirePackage{newtxtext}
+        \RequirePackage[uprightGreek]{newtxmath} % TO DO: verify wether uprightGreek option is necessary
+        \renewcommand*\familydefault{\sfdefault}
+    }{%
+        \RequirePackage{lmodern}
+        \RequirePackage{microtype}
+    }
+}
+
 % Setting up document after user settings are available
 % setting up the pdf meta data
 \AddToHook{begindocument/end}{
-    % font setup
-    % sans serif
-    % \usepackage{tgtermes}
-	% \renewcommand*\familydefault{\sfdefault}
-
     % create pdf title; if no specific pdf title is specified by the user, use thesis title and subtitle.
     % If no thesis subtitle is specified, use only thesis title
     \ifthenelse{\equal{\pgfkeysvalueof{/mt/pdfmetadata/title}}{}}{% if pdf title key is not set by user to a specific value

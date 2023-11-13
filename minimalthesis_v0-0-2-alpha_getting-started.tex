@@ -22,9 +22,9 @@
 
 % favorite for sans serif
 % math + text looks good, but issue with ttfamily/verb
-\usepackage{newtxtext}
-\usepackage[uprightGreek]{newtxmath} % verify wether uprightGreek option is necessary
-\renewcommand*\familydefault{\sfdefault}
+%\usepackage{newtxtext}
+%\usepackage[uprightGreek]{newtxmath} % verify wether uprightGreek option is necessary
+%\renewcommand*\familydefault{\sfdefault}
 
  
 \def\releaseVersion{0.0.2-alpha-1}
@@ -50,6 +50,9 @@
 			additional = Prof. Stefan Boltzmann
 		}
 	},
+	visual styling = {
+		default font = sans-serif
+	},
 	pdfmetadata = {
 		subject = {A Quick-Start-Guide for the "minimalthesis" LaTeX Documentclass, Version \releaseVersion.},
 		keywords = {academic-thesis, template, latex, documentclass, minimalthesis, v\releaseVersion, quick-start-guide, doc. rev. 0}
@@ -70,6 +73,6 @@
 
 \begin{document}
 	\mtTitlepage
-%	\mtTOC
-%	\input{./minimalthesis_v0-0-2-alpha_getting-started_content.tex}
+	\mtTOC
+	\input{./minimalthesis_v0-0-2-alpha_getting-started_content.tex}
 \end{document}
