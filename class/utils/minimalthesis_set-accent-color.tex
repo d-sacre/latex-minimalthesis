@@ -1,0 +1,62 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% start of file `./class/utils/minimalthesis_set-accent-color.tex'. %%
+%%                                                                   %%
+%% version: v0.0.2-alpha-1                                           %%
+%% status: alpha                                                     %%
+%% file version: 2023-11-14                                          %%
+%%                                                                   %%
+%% Copyright 2023 Daniel Sacré.                                      %%
+%%                                                                   %%    
+%% A very simple document class for writing theses, especially in    %%
+%% natural sciences.                                                 %%
+%%                                                                   %%
+%% This piece of software comes without any warranty, not even that  %%
+%% it is fit for the intended purpose. Since it is an alpha-release, %%
+%% Bug reports and suggestions via github are highly welcome.        %%
+%%                                                                   %%
+%% LICENSE:                                                          %%
+%% This work may be distributed and/or modified under the            %%
+%% conditions of the LaTeX Project Public License version 1.3c, or   %%
+%% (at your option) any later version. The full license text is      %%
+%% available at http://www.latex-project.org/lppl/.                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\mtVisualStylingColorSchemeSetAccentColor}[3]{%
+    \ifthenelse{%
+        \equal{\pgfkeysvalueof{/mt/visual styling/color scheme/type}}{plain}%
+    }{%
+        % plain color scheme
+        % nothing to do
+    }{%
+        \ifthenelse{
+            \equal{\pgfkeysvalueof{/mt/visual styling/color scheme/type}}{fancy-colorful}%
+        }{%
+            % fancy-colorful scheme
+            \ifthenelse{
+                \equal{\pgfkeysvalueof{/mt/visual styling/color scheme/colors/accent/#1/define/color model}}{}
+            }{%
+                % user did not specify color with model and value
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/visual styling/color scheme/colors/accent/#1/set}}{}%
+                }{%
+                    % user did not specify any color
+                }{%
+                    % user did specify LaTeX internal color name or mix
+                    \colorlet{#2}{\pgfkeysvalueof{/mt/visual styling/color scheme/colors/accent/#1/set}}
+                }
+            }{%
+                % user specified color with model and value
+                \definecolor{#2}{%
+                    \pgfkeysvalueof{/mt/visual styling/color scheme/colors/accent/#1/define/color model}%
+                }{%
+                    \pgfkeysvalueof{/mt/visual styling/color scheme/colors/accent/#1/define/color value}%
+                }%
+            }%
+        }{%
+            % fancy-grayscale theme
+            \colorlet{#2}{#3}%
+        }%
+    }%
+} % #1 = pgfkeys only color, #2 = color name, #3 = grayscale color

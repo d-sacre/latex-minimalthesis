@@ -1,4 +1,6 @@
-# latex-minimalthesis v0.0.1-alpha, 2023-09-27
-A LaTeX class for typesetting natural science theses. Built upon scrreprt and pgfkeys.
+# latex-minimalthesis
+A LaTeX class for typesetting natural science theses. Built upon `scrreprt` and `pgfkeys`. The current version is `v0.0.2-alpha-1`, the overall status of the project has to be considered `alpha`, but should contain sufficient functionality and be stable enough for productive use.
 
-The first (more or less proof-of-concept) release of the minimalthesis "class". Still uses the \input{} approach and komavars to achieve the desired functionality. It is very rough, but should work in theory and could be used by experienced users in a production environment (but is NOT ADVISED).
+## IMPORTANT NOTE: ROLLING RELEASE MODEL
+This LaTeX document class is developed with a Rolling Release Model. The `current-release` branch will be continously updated to the most recent release (currently `v0.0.2-alpha-1`).
+Older versions can be found in the `legacy` branch as well as in the `Releases` tab.

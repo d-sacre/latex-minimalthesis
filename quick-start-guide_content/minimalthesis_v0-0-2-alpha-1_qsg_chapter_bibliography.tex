@@ -1,0 +1,28 @@
+\chapter{Bibliography: Prerequisites, Usage \& Functionality}
+	The bibliography is created by using \verb|biber|. On a Linux based OS with \verb|TeXlive| as a \LaTeX~backend, it can be installed via the\\[0.125cm]
+	\begin{tabular}{ll}
+		\verb|texlive-bibtex-extra|& (Debian based distro)\\
+		\verb|texlive-bibtexextra|& (Arch based disto)
+	\end{tabular}\\
+	packages.
+	\newline To create the required bibliography files, one has to run in the terminal:\\
+	\verb|biber TEXFILENAME|\\
+	To update the output pdf accordingly, the following sequence of commands is recommended:\\[-1cm]
+	\begin{verbatim}
+		pdflatex TEXFILENAME.tex &&
+		biber TEXFILENAME &&
+		pdflatex TEXFILENAME.tex &&
+		pdflatex TEXFILENAME.tex 
+	\end{verbatim} 
+	\vspace{-0.5cm}
+	For \verb|TeXstudio| users, it is possible to select under\\[-1cm]
+	\begin{center}
+		\verb|Options| $\rightarrow$ 
+		\verb|Configure TeXstudio| $\rightarrow$
+		\verb|Build|$ \rightarrow$
+		\verb|Default Bibliography Tool| 
+	\end{center}
+	\vspace{-0.5cm}
+	\verb|biber| as the default bibliography tool. After that, as soon as a change will occur in any of the bibliography files/data, \verb|TeXstudio| will automatically rebuild the bibliography during the next compilation (so no additional user interaction required). If \verb|TeXstudio| will not do that, a bibliography rebuild can be forced manually by pressing \verb|F8|.
+	\newline \verb|minimalthesis| uses per default the \enquote{Angewandte Chemie} (\verb|chem-angew|) bibliography standard. \textcolor{red}{Currently, this cannot be changed by the user, except by modifying the preamble file.} 
+	\newline In addition, \verb|minimalthesis| provides the \verb|@arxiv| \cite{arxivExample} and \verb|@thesis| \cite{thesisExample} bibliography drivers, so that Arxiv preprints and theses can be cited properly without any manual adjustments by the user.

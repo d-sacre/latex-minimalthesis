@@ -1,0 +1,33 @@
+\begin{titlepage}
+	\def\scale{0.55}
+	\pagecolor{cyan}
+	\begin{tikzpicture}[remember picture, overlay]
+		\node[text=white,font=\Huge\sffamily\bfseries] at ($(current page.center)!0.75!(current page.north)$) {Daniel Sacré};
+		
+		\node[text=white,font=\Huge\sffamily\bfseries, align=center] at ($(current page.center)!0.75!(current page.south)$) {
+			– Quick-Start-Guide –\\
+			{\normalsize for the "minimalthesis" LaTeX Documentclass, Version \releaseVersion}
+		};
+		
+		\begin{scope}[shift={(current page.center)}]
+			% new variant
+			
+			% background 
+			% outer line
+			\path[draw=white, line width = \scale*0.375*0.5*0.5 cm, rounded corners=0.5cm]($(current page.north east)+(-1.25,-1.25)$)rectangle($(current page.south west)+(1.25,1.25)$);
+			\path[draw=white, line width = \scale*0.375*0.5 cm, rounded corners=0.75cm]($(current page.north east)+(-1,-1)$)rectangle($(current page.south west)+(1,1)$);
+			
+			% ring
+			\path[fill=white](0,0)circle(\scale*7.125cm);
+			
+			% square
+			\path[draw=white, fill=cyan, line width = \scale*0.75 cm](-2*\scale*5.5cm/2,-2*\scale*5.5cm/2)rectangle++(2*\scale*5.5cm,2*\scale*5.5cm);
+			\path[fill=white](0,0)circle(\scale*4.5cm); % inner color highlight
+			\node at (0,0){
+				\includegraphics[width=7cm]{./class/img/minimalthesis_logo.pdf}
+			};
+			
+		\end{scope}
+	\end{tikzpicture}
+\end{titlepage}
+\pagecolor{white}

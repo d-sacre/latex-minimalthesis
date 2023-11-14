@@ -1,0 +1,93 @@
+\documentclass{./class/minimalthesis}
+
+\usepackage{blindtext}
+
+% sans serif
+% \usepackage{tgtermes}
+% \renewcommand*\familydefault{\sfdefault}
+% fira sans + newtxsf for math
+%	\usepackage[sfdefault]{FiraSans} %% option 'sfdefault' activates Fira Sans as the default text font
+%	\usepackage{newtxsf}
+
+%
+%\usepackage{cmbright} % better math
+
+% broken ttfamily/verb, but math looks good
+%	\usepackage{libertine}
+%	\usepackage{libertinust1math} 
+
+% looks good with math
+%	\usepackage[sc]{mathpazo}
+%	\linespread{1.05} 
+
+% favorite for sans serif
+% math + text looks good, but issue with ttfamily/verb
+%\usepackage{newtxtext}
+%\usepackage[uprightGreek]{newtxmath} % verify wether uprightGreek option is necessary
+%\renewcommand*\familydefault{\sfdefault}
+
+\usepackage{pagecolor}
+
+ 
+\def\releaseVersion{0.0.2-alpha-1}
+
+
+\mtSetupComplete{
+	thesis = {
+		title = minimalthesis,
+		subtitle = {Quick-Start-Guide (v\releaseVersion)},
+		author = {
+			name = Daniel Sacré
+		}
+	},
+	visual styling = {
+		default font = sans-serif,
+		color scheme = {
+			type = fancy-colorful
+		},
+		caption/propagate color scheme = true
+	},
+	modules = {mathematics, physics, chemistry, coding, data visualization},
+	bibliography = {
+		file path = ./example-bibliograhy_biber.bib
+	},
+	pdfmetadata = {
+		subject = {A Quick-Start-Guide for the "minimalthesis" LaTeX Documentclass, Version \releaseVersion.},
+		keywords = {academic-thesis, template, latex, documentclass, minimalthesis, v\releaseVersion, quick-start-guide, doc. rev. 0}
+	},
+	titlepage = {
+		logo = {
+			object type = image,
+			file path = ./class/img/minimalthesis_logo.pdf,
+			height = 8 cm % 10 cm
+		},
+		handed in by = {text = written by}
+	},
+%	debug/show margins=true
+}
+
+\begin{document}
+%	\mtGenerateTitlepage
+	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_custom-cover.tex}
+
+	\mtGenerateTOC
+	
+	\chapter{Preface}
+		\section{What is minimalthesis?}
+			A LaTeX documentclass for \verb|pdflatex|, which produces a minimalistic layout with minimal effort by the end user, but still allows for customization.
+		
+		\section{What is minimalthesis not (yet)?}
+			\begin{itemize}
+				\item feature complete,
+				\item Lua\LaTeX, Xe\TeX, etc. compatible,
+				\item \verb|otf|, \verb|ttf| font capable
+			\end{itemize}
+			
+	
+	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_chapter_general.tex}
+	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_chapter_bibliography.tex}
+	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_chapter_science.tex}
+	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_chapter_changelog.tex}
+	
+	\mtGenerateBibliography
+\end{document}
