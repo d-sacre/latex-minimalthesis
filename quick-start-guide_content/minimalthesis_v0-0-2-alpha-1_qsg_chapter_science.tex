@@ -1,0 +1,71 @@
+\chapter{Natural Science}
+	\section{Mathematical Formulae}
+		To facilitate the typesetting of mathematical equations, especially with respect to physical use cases, \verb|minimalthesis| not only loads the \verb|amsmath|, \verb|bm| and \verb|amssymb| packages, but also the \verb|derivative| and \verb|physics| package to especially help with typesetting differentials and derivatives.
+		\newline Typesetting derivatives via the \verb|derivative| package is very flexible: 
+		\begin{table}[h!]
+			\centering
+			\caption{Examples on how to typeset derivatives with the \texttt{derivative} package}
+			\begin{verbatim}
+				\pdv{f}{x}, \quad \odv{Q}{t}=\odv{s}{t}, \quad \pdv{f}{x,y}, \quad 
+				\derivset{\odv}[switch-*=false] \odv{y}{x}, \quad \odv[order=n]{y}{x}, \quad
+				\derivset{\odv}[] \odv*{\odv{y}{x}}{x}, \quad 
+				\derivset{\pdv}[sort-method={sign,symbol,abs}] 
+				\pdv[order={c+kn,-b+2a}]{f}{x,y}
+			\end{verbatim}
+			\begin{align*}{c}
+				\pdv{f}{x}, \quad \odv{Q}{t}=\odv{s}{t}, \quad \pdv{f}{x,y}, \quad 
+				\derivset{\odv}[switch-*=false] \odv{y}{x}, \quad \odv[order=n]{y}{x}, \quad
+				\derivset{\odv}[] \odv*{\odv{y}{x}}{x}, \quad 
+				\derivset{\pdv}[sort-method={sign,symbol,abs}] \pdv[order={c+kn,-b+2a}]{f}{x,y}
+			\end{align*}
+		\end{table}
+		An example for typesetting differentials with the \verb|physics| and \verb|derivative| packages:
+		\begin{table}[h!]
+			\centering
+			\caption{Examples on how to typeset differentials with the \texttt{physics} and \texttt{derivative} package}
+			\begin{verbatim}
+				T = \int_{0}^{\infty}t\dd{t}, 
+				\quad V = \int_{a}^{b} r \dd[3]{r} = \int_{a}^{b} r \odif{x,y,z}
+			\end{verbatim}
+			\begin{align*}
+				T = \int_{0}^{\infty}t\dd{t}, \quad V = \int_{a}^{b} r \dd[3]{r} = \int_{a}^{b} r \odif{x,y,z}
+			\end{align*}
+			
+		\end{table}
+	
+	\newpage
+	\section{Chemical Formulae}
+		For typesetting chemical formulae, \verb|minimalthesis| loads the \verb|mhchem| package.
+		\begin{table}[h!]
+			\caption{Examples how to use \texttt{mhchem}. Excerpt from the manual.}
+			\label{tab:example:mhchem}
+			\centering
+			\begin{tabular}{lcl}
+				\verb|\ce{H2O}, \ce{CO2}, \ce{NH3}| & $\rightarrow$ & \ce{H2O}, \ce{CO2}, \ce{NH3}\\[0.125cm]
+				\verb|\ce{H+}, \ce{CrO4^2-}, \ce{[AgCl2]-}| & $\rightarrow$ & \ce{H+}, \ce{CrO4^2-}, \ce{[AgCl2]-} \\[0.125cm]
+				\verb|\ce{Y^99+}, \ce{^{227}_{90}Th+}| & $\rightarrow$ & \ce{Y^99+}, \ce{^{227}_{90}Th+}\\[0.125cm]
+				\verb|\ce{Fe^{II}Fe^{III}2O4}| & $\rightarrow$ & \ce{Fe^{II}Fe^{III}2O4}\\[0.125cm]
+				\verb|\ce{(NH4)2S}, \ce{[\{(X2)3\}2]^3+}| & $\rightarrow$ & \ce{(NH4)2S}, \ce{[\{(X2)3\}2]^3+}\\[0.125cm]
+				\verb|\ce{CO2 + C -> 2 CO}| & $\rightarrow$ & \ce{CO2 + C -> 2 CO}\\
+			\end{tabular}
+		\end{table}
+		\newline For more information, please refer to the official \verb|mhchem| manual.
+	
+	\section{Units}
+		\label{sec:units}
+		To aid with typesetting units, \verb|minimalthesis| loads the \verb|siunitx| package. This package ensures that independent of the user input, all the number and unit conventions derived from the locale settings are satisfied. It also handles the different behavior in math and text environments.
+		
+		\begin{table}[h!]
+			\caption{Examples how to use \texttt{siunitx}. }
+			\label{tab:example:siunitx}
+			\centering
+			\begin{tabular}{lcl}
+				\verb|\num{23,3}, \num{23.3}| & $\rightarrow$ & \num{23,3}, \num{23.3}\\[0.125cm]
+				\verb|\SI{23,3}{\volt}, \SI{23.3}{\volt}| & $\rightarrow$ & \SI{23,3}{\volt}, \SI{23.3}{\volt}\\[0.125cm]
+				\verb|\si{\kilo\metre}, \si{\kilogram\meter\per\second\squared}| & $\rightarrow$ & \si{\kilo\metre}, \si{\kilogram\meter\per\second\squared}\\[0.125cm]
+				\verb|\si[per-mode=fraction]{\kilogram\meter\per\second\squared}| & $\rightarrow$ & \si[per-mode=fraction]{\kilogram\meter\per\second\squared}\\[0.125cm]
+				\verb|$s = \SI{9.81}{\meter\per\second\squared}\cdot| & $\rightarrow$ &
+				$s = \SI{9.81}{\meter\per\second\squared}\cdot\int_{0}^{t}t\dd{t}$\\
+				\verb|\int_{0}^{t} t \dd{t}$| & & 
+			\end{tabular}
+		\end{table}

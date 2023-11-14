@@ -1,0 +1,27 @@
+\chapter{General Information}
+	\section{Default Settings \& User Choice}
+		\subsection{Base Class \& Basic Layout}
+			Per default, \verb|minimalthesis| uses the \verb|scrreprt| koma document class with a two sided layout (binding correction: \SI{1}{\centi\metre}) as a basis. The page headers and footers are centered; the footer contains the current page number. The header either contains the current section name (if a section exists; see e.g. page \pageref{sec:general-functionality-overview}) or the current chapter name (see e.g. page \pageref{page:example:header-with-chapter}).
+			\newline Captions include in small, bold font the type of float, its number and are separated by a colon from the description in normal, small font (see e.g. table \ref{tab:example:mhchem}).
+		
+		\subsection{Language \& Locale}
+			The default document language is set to \verb|english| \textcolor{red}{and currently cannot be changed by the user}. The settings for typesetting units (see \mbox{section \ref{sec:units}}) are directly derived from the default language.
+		
+		\subsection{Font, Visuals \& Color}
+			The typesetting design is more classic-minimalist: 
+			The user has the choice between the standard serif \verb|lmodern| \LaTeX~font or a sans serif variant as well as three visual styles (\verb|plain|, \verb|fancy-grayscale|, \verb|fancy-colorful|), which differ in highlighting/usage of color.
+		
+		\subsection{Hyperlinks \& pdf Metadata}
+			Per default, hidden hyperlinks are activated. The pdf Metadata is created from the user information: The pdf author is equal to \verb|mt::author::name|,  \color{red}the pdf title will be constructed from \verb|mt::thesis::title| and/or \verb|mt::thesis::subtitle| (which ever is available; if both exist, they will be combined). The pdf subject as well as the pdf keywords are set by default to \enquote{Academic Thesis} and cannot be changed by the user.\color{black}
+	
+	\newpage
+	\section{General Functionality Overview}
+		\label{sec:general-functionality-overview}
+		\subsection{Quotation Marks}
+			To facilitate the usage of quotation marks, \verb|minimalthesis| loads the \verb|csquotes| package, which allows to automatically selects the appropriate quotation marks based on language preset and sentence parameters by using \verb|\enquote{text}|.
+			\newline For example,\\[0.125cm]
+			\begin{tabular}{lcl}
+				\verb|\enquote{A quotation mark test.}|& $\rightarrow$ & \enquote{A quotation mark test.}\\
+				\verb|\enquote{A \enquote{quotation mark} test.}|& $\rightarrow$ & \enquote{A \enquote{quotation mark} test.}\\
+			\end{tabular}
+	
