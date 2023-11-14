@@ -67,15 +67,16 @@
 \RequirePackage{csquotes}
 \RequirePackage{enumitem}
 
-\RequirePackage{scrlayer-scrpage}
-\pagestyle{scrheadings}
+% page headers/footers
+% \RequirePackage{scrlayer-scrpage}
+% \pagestyle{scrheadings}
 
-\clearpairofpagestyles
-\automark[section]{chapter}
+% \clearpairofpagestyles
+% \automark[section]{chapter}
 
-\clearmainofpairofpagestyles
-\chead{\small\rightorleftmark}
-\cfoot[\pagemark]{\pagemark} % page number centered in foot
+% \clearmainofpairofpagestyles
+% \chead{\small\rightorleftmark}
+% \cfoot[\pagemark]{\pagemark} % page number centered in foot
 
 \makeatletter
     \newcommand{\rightorleftmark}{%
@@ -89,7 +90,7 @@
         \fi
     }
 \makeatother
-%%%%%https://tex.stackexchange.com/questions/101915/latex-fancyhdr-is-possible-to-use-leftmark-and-rightmark-alternatively
+% %%%%%https://tex.stackexchange.com/questions/101915/latex-fancyhdr-is-possible-to-use-leftmark-and-rightmark-alternatively
 
 \renewcommand*{\chapterheadstartvskip}{\vspace*{0cm}}
 \renewcommand*{\chapterheadendvskip}{\vspace{0.5cm}}
@@ -145,8 +146,9 @@
 \tikzexternalize[prefix=tikzexternalize/]
 
 % \RequirePackage{listings} % only if code snippets to be shown
-\RequirePackage[labelfont={bf}]{caption}
-\captionsetup{format=plain,labelformat=simple,font=small,labelsep = colon}
+
+% caption
+\RequirePackage{caption}
 
 % Tables
 \RequirePackage{tabulary}
@@ -177,7 +179,6 @@
 \input{./class/pages/title/minimalthesis_titlepage.def}
 \input{./class/pages/toc/minimalthesis_toc.def}
 \newcommand{\mtGenerateBibliography}{\printbibliography}
-
 
 
 \AddToHook{begindocument/before}{
@@ -216,14 +217,58 @@
         \RequirePackage{microtype}
     }
 
+    % header and footer
+    \ifthenelse{%
+        \equal{\pgfkeysvalueof{/mt/visual styling/header/head seperator line/show}}{true}
+    }{%
+        \RequirePackage[headsepline = \pgfkeysvalueof{/mt/visual styling/header/head seperator line/thickness}]{scrlayer-scrpage}
+    }{%
+        % no head sep line
+        \RequirePackage{scrlayer-scrpage}
+    }
+    
+    \pagestyle{scrheadings}
+
+    \clearpairofpagestyles
+    \automark[section]{chapter}
+
+    \clearmainofpairofpagestyles
+    \chead{\small\rightorleftmark}
+    \cfoot[\pagemark]{\pagemark} % page number centered in foot
+
     % defining the accent colors
-    % \makeatletter
-        % no @ in macro name/makeatletter allowed in \AddToHook{begindocument/before}{...}
-        % \@mt@visualStyling@colorScheme@setAccentColor
-        \mtVisualStylingColorSchemeSetAccentColor{primary}{mtColorsAccentPrimary}{black!50!gray}
-        \mtVisualStylingColorSchemeSetAccentColor{secondary}{mtColorsAccentSecondary}{black!25!gray}
-        \mtVisualStylingColorSchemeSetAccentColor{tertiary}{mtColorsAccentTertiary}{gray}
-    % \makeatother
+    \mtVisualStylingColorSchemeSetAccentColor{primary}{mtColorsAccentPrimary}{black!50!gray}
+    \mtVisualStylingColorSchemeSetAccentColor{secondary}{mtColorsAccentSecondary}{black!25!gray}
+    \mtVisualStylingColorSchemeSetAccentColor{tertiary}{mtColorsAccentTertiary}{gray}
+    
+
+    % setting object to accent colors
+    \addtokomafont{headsepline}{\color{mtColorsAccentTertiary}}%
+    \setkomafont{pageheadfoot}{\normalfont\color{mtColorsAccentSecondary}}%
+    
+    % setting headline and toc colors
+    \ifthenelse{%
+        \equal{\pgfkeysvalueof{/mt/visual styling/table of contents/propagate color scheme}}{true}
+    }{%
+        % color scheme allowed to propagate into toc
+        \setkomafont{disposition}{\color{mtColorsAccentPrimary}\bfseries}
+    }{%
+        % color scheme not allowed to propagate into toc
+        \addtokomafont{chapter}{\color{mtColorsAccentPrimary}}
+        \addtokomafont{section}{\color{mtColorsAccentPrimary}}
+        \addtokomafont{subsection}{\color{mtColorsAccentPrimary}}
+        \addtokomafont{subsubsection}{\color{mtColorsAccentPrimary}}
+    }
+
+    % formatting captions
+    \captionsetup{format=plain,labelformat=simple,labelsep = colon, font={color=black, small}}
+    \ifthenelse{%
+        \equal{\pgfkeysvalueof{/mt/visual styling/caption/propagate color scheme}}{true}%
+    }{%
+        \captionsetup{labelfont={bf, color=mtColorsAccentSecondary}}
+    }{%
+        \captionsetup{labelfont={bf, color=black}}
+    }%
 }
 
 \AddToHook{begindocument/end}{

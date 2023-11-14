@@ -53,12 +53,9 @@
 	visual styling = {
 		default font = sans-serif,
 		color scheme = {
-			type = fancy-grayscale,
-			colors/accent/primary/set = orange,
-%			colors/accent/primary/define = {color model=HTML, color value=9f3cd5},
-			colors/accent/secondary/define = {color model=HTML, color value=3cd549},
-			colors/accent/tertiary/define = {color model=HTML, color value=3cc0d5},
-		}
+			type = fancy-colorful
+		},
+		caption/propagate color scheme = true
 	},
 	bibliography = {
 		file path = ./example-bibliograhy_biber.bib
@@ -83,11 +80,8 @@
 }
 
 \begin{document}
-	\color{mtColorsAccentPrimary} test primary
-	\color{mtColorsAccentSecondary} test secondary
-	\color{mtColorsAccentTertiary} test tertiary
-%	\mtGenerateTitlepage
-%	\mtGenerateTOC
-%	\input{./minimalthesis_v0-0-2-alpha_getting-started_content.tex}
-%	\mtGenerateBibliography
+	\mtGenerateTitlepage
+	\mtGenerateTOC
+	\input{./minimalthesis_v0-0-2-alpha_getting-started_content.tex}
+	\mtGenerateBibliography
 \end{document}
