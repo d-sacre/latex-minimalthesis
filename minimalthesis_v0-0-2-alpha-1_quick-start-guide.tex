@@ -33,21 +33,9 @@
 \mtSetupComplete{
 	thesis = {
 		title = minimalthesis,
-		subtitle = {Getting started with v\releaseVersion},
-		type = Dissertation,
+		subtitle = {Quick-Start-Guide (v\releaseVersion)},
 		author = {
-			name = Max Mustermann,
-			place of birth = Munich,
-%			affiliation = {University of Beteigeuze, Institute for Experimental Physics, Nanolab},
-			affiliations = {%
-				{University of Beteigeuze, Institute for Experimental Physics, Nanolab},%
-				{University of Jupiter, Institute for Chemistry, Synthesis Lab}
-			}
-		},
-		examiners = {
-			chairman = Prof. Habakuk Tibatong,
-			reviewers = {Prof. Hans Bartolomä, Prof. Louis Murphy},
-			additional = Prof. Stefan Boltzmann
+			name = Daniel Sacré
 		}
 	},
 	visual styling = {
@@ -71,11 +59,7 @@
 			file path = ./class/img/minimalthesis_logo.pdf,
 			height = 8 cm % 10 cm
 		},
-		author affiliations = {%
-			listing style = {%
-				alignment = rows
-			}
-		}
+		handed in by = {text = written by}
 	},
 %	debug/show margins=true
 }
@@ -83,6 +67,6 @@
 \begin{document}
 	\mtGenerateTitlepage
 	\mtGenerateTOC
-	\input{./minimalthesis_v0-0-2-alpha_getting-started_content.tex}
+	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1.tex}
 	\mtGenerateBibliography
 \end{document}
