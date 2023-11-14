@@ -1,3 +1,28 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% start of file `./class/pgfkeys/minimalthesis_pgfkeys.setup'.      %%
+%%                                                                   %%
+%% version: v0.0.2-alpha-1                                           %%
+%% status: alpha                                                     %%
+%% file version: 2023-11-14                                          %%
+%%                                                                   %%
+%% Copyright 2023 Daniel Sacré.                                      %%
+%%                                                                   %%    
+%% A very simple document class for writing theses, especially in    %%
+%% natural sciences.                                                 %%
+%%                                                                   %%
+%% This piece of software comes without any warranty, not even that  %%
+%% it is fit for the intended purpose. Since it is an alpha-release, %%
+%% Bug reports and suggestions via github are highly welcome.        %%
+%%                                                                   %%
+%% LICENSE:                                                          %%
+%% This work may be distributed and/or modified under the            %%
+%% conditions of the LaTeX Project Public License version 1.3c, or   %%
+%% (at your option) any later version. The full license text is      %%
+%% available at http://www.latex-project.org/lppl/.                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \makeatletter
     % macros for storing titlepage font weight data
     \newcommand{\@mt@titlepage@title@font@weight}{\bfseries}
@@ -68,6 +93,28 @@
                 visual styling/table of contents/propagate color scheme/.initial = true,
             visual styling/caption/.is setter,
                 visual styling/caption/propagate color scheme/.initial = true,
+        modules/.initial,
+        @modules/.is setter,
+            @modules/@listOfValidModuleOptions/.initial = {mathematics, physics, chemistry, coding, data visualization},
+            @modules/@mathematics/.is setter,
+                @modules/@mathematics/load/.initial = false,
+                @modules/@mathematics/packages/.initial = {%
+                    \RequirePackage{amsmath,bm,amssymb}%
+                    \RequirePackage{physics,derivative} % derivative, differentials
+                    \RequirePackage{harpoon} % provides \overrightharp
+                }, % not working properly
+            @modules/@physics/.is setter,
+                @modules/@physics/@load/.initial = false,
+                @modules/@physics/@packages/.initial = {},
+            @modules/@chemistry/.is setter, 
+                @modules/@chemistry/@load/.initial = false,
+                @modules/@chemistry/@packages/.initial = {},
+            @modules/@coding/.is setter,
+                @modules/@coding/@load/.initial = false,
+                @modules/@coding/@packages/.initial = {},
+            @modules/@data visualization/.is setter,
+                @modules/@data visualization/@load/.initial = false,
+                @modules/@data visualization/@packages/.initial = {},
         bibliography/.is setter,
             bibliography/file path/.initial,
         academic degree identifiers/.is setter,

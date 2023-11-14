@@ -4,7 +4,7 @@
 %%                                                                   %%
 %% version: v0.0.2-alpha-1                                           %%
 %% status: alpha                                                     %%
-%% file version: 2023-11-XX                                          %%
+%% file version: 2023-11-14                                          %%
 %%                                                                   %%
 %% Copyright 2023 Daniel Sacré.                                      %%
 %%                                                                   %%    
@@ -37,20 +37,19 @@
     noindent,
     parskip=full,
     twoside,
-    open= any,
-    BCOR=1cm,
-    headsepline,
+    open = any,
+    BCOR=1cm
 ]{scrreprt}
 
 % colors
 \RequirePackage[dvipsnames]{xcolor} % needs to be loaded here to avoid issues due to options clash with pgf
- % Definition of minimal thesis accent colors
- \definecolor{mtColorsAccentPrimary}{HTML}{000000}
- \definecolor{mtColorsAccentSecondary}{HTML}{000000}
- \definecolor{mtColorsAccentTertiary}{HTML}{000000}
+% Definition of minimal thesis accent colors
+\definecolor{mtColorsAccentPrimary}{HTML}{000000}
+\definecolor{mtColorsAccentSecondary}{HTML}{000000}
+\definecolor{mtColorsAccentTertiary}{HTML}{000000}
 
 \RequirePackage{ifthen, etoolbox}
-\RequirePackage{pgfkeys, pgffor,pgf}
+\RequirePackage{pgfkeys, pgffor, pgf}
 
 % load utilities
 \input{./class/utils/minimalthesis_set-accent-color.tex}
@@ -59,25 +58,18 @@
 \input{./class/pgfkeys/minimalthesis_pgfkeys.setup}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\RequirePackage[english]{babel}
+\RequirePackage[english]{babel}% language set-up
 
+% LaTeX input encoding
 \RequirePackage[utf8]{inputenc}
 \RequirePackage{fontenc}
 
-\RequirePackage{csquotes}
-\RequirePackage{enumitem}
+\RequirePackage{csquotes}% quotation marks
+\RequirePackage{enumitem}% better control over itemize/enumerate
 
 % page headers/footers
-% \RequirePackage{scrlayer-scrpage}
-% \pagestyle{scrheadings}
-
-% \clearpairofpagestyles
-% \automark[section]{chapter}
-
-% \clearmainofpairofpagestyles
-% \chead{\small\rightorleftmark}
-% \cfoot[\pagemark]{\pagemark} % page number centered in foot
-
+% get the right marks independent of the page (even/odd)
+% source: https://tex.stackexchange.com/questions/101915/latex-fancyhdr-is-possible-to-use-leftmark-and-rightmark-alternatively
 \makeatletter
     \newcommand{\rightorleftmark}{%
         \begingroup\protected@edef\x{\rightmark}%
@@ -90,8 +82,8 @@
         \fi
     }
 \makeatother
-% %%%%%https://tex.stackexchange.com/questions/101915/latex-fancyhdr-is-possible-to-use-leftmark-and-rightmark-alternatively
 
+% distance before chapter
 \renewcommand*{\chapterheadstartvskip}{\vspace*{0cm}}
 \renewcommand*{\chapterheadendvskip}{\vspace{0.5cm}}
 
@@ -117,7 +109,6 @@
 \makeatother
 
 % usepackages related to graphics
-% \RequirePackage[dvipsnames]{xcolor}
 \RequirePackage{graphicx}
 \RequirePackage{wrapfig}
 
@@ -127,25 +118,6 @@
 \usetikzlibrary{spy}
 \usetikzlibrary{fadings}
 \usetikzlibrary{mindmap,trees}
-
-% usepackages related to science
-\RequirePackage{siunitx}
-\RequirePackage{mhchem}
-\RequirePackage{amsmath,bm,amssymb}
-\RequirePackage{physics,derivative} % derivative, differentials
-\RequirePackage{harpoon} % provides \overrightharp
-
-% plotting
-\RequirePackage{tikz-3dplot}
-\RequirePackage{pgfplots}
-\pgfplotsset{compat=1.18}
-\RequirePackage{pgfplotstable}
-\usepgfplotslibrary{fillbetween,groupplots}
-
-\usepgfplotslibrary{external}
-\tikzexternalize[prefix=tikzexternalize/]
-
-% \RequirePackage{listings} % only if code snippets to be shown
 
 % caption
 \RequirePackage{caption}
@@ -161,10 +133,10 @@
 % See: https://github.com/plk/biblatex/issues/1107
 \RequirePackage[
     backend=biber,
-    style=chem-angew,
+    style=chem-angew,% not possible to be set AFTER package is loaded
     articletitle,
     % sortlocale=de_DE,
-        % style=apsrev4-1,
+    % style=apsrev4-1,
     sorting=none,
     natbib=true,
     url=false,
@@ -174,6 +146,12 @@
 ]{biblatex}
 
 \RequirePackage[hidelinks]{hyperref}
+
+% packages related to math
+% REMARK: cannot be loaded in \AddToHook{begindocument/before}{...} because of error: Command `\Bbbk' already defined. ...ol{\Bbbk} {\mathord}{AMSb}{"7C}
+\RequirePackage{amsmath,bm,amssymb}
+\RequirePackage{physics,derivative} % derivative, differentials
+\RequirePackage{harpoon} % provides \overrightharp
 
 % Loading of definitions of special pages
 \input{./class/pages/title/minimalthesis_titlepage.def}
@@ -269,6 +247,33 @@
     }{%
         \captionsetup{labelfont={bf, color=black}}
     }%
+
+    % adding user specified packages
+    % REMARK: Not working in v0.0.2-alpha-1
+    % \foreach \element in {\pgfkeysvalueof{/mt/modules}}{
+    %     \ifthenelse{%
+    %         \equal{\pgfkeysvalueof{/mt/@modules/@\element/@load}}{}
+    %     }{%
+    %         \pgfkeyssetvalue{/mt/@modules/@\element/@load}{true}%
+    %     }{
+    %         \pgfkeyssetvalue{/mt/@modules/@\element/@load}{true}%
+    %     }
+	% }
+
+    \RequirePackage{siunitx}
+    \RequirePackage{mhchem}
+
+    % % plotting
+    % \RequirePackage{tikz-3dplot}
+    % \RequirePackage{pgfplots}
+    % % \pgfplotsset{compat=1.18}
+    % \RequirePackage{pgfplotstable}
+    % \usepgfplotslibrary{fillbetween,groupplots}
+
+    % \usepgfplotslibrary{external}
+    % \tikzexternalize[prefix=tikzexternalize/]
+
+    % % \RequirePackage{listings} % only if code snippets to be shown
 }
 
 \AddToHook{begindocument/end}{
