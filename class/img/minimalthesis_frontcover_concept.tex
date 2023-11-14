@@ -9,6 +9,10 @@ open=any,
 BCOR=1cm,
 ]{scrreprt}
 
+\usepackage{newtxtext}
+\usepackage[uprightGreek]{newtxmath} % TO DO: verify whether uprightGreek option is necessary
+\renewcommand*\familydefault{\sfdefault}
+
 \usepackage[twoside,outer=2.5cm,inner=3.5cm,top=2cm,bottom=2cm,includeheadfoot]{geometry}
 \usepackage{graphicx}
 
@@ -20,10 +24,6 @@ BCOR=1cm,
 	decorations.shapes,
 	decorations.text,
 }
-
-% source: https://tex.stackexchange.com/questions/66216/draw-arc-in-tikz-when-center-of-circle-is-specified
-\def\centerarc[#1](#2)(#3:#4:#5)% Syntax: [draw options] (center) (initial angle:final angle:radius)
-{ \draw[#1] ($(#2)+({#5*cos(#3)},{#5*sin(#3)})$) arc (#3:#4:#5); }
 
 \def\scale{0.55} % 0.55
 
@@ -39,7 +39,7 @@ BCOR=1cm,
 		
 		\node[text=white,font=\Huge\sffamily\bfseries, align=center] at ($(current page.center)!0.75!(current page.south)$) {
 			– Quick-Start-Guide –\\
-			{\normalsize for the "minimalthesis" LaTeX Documentclass, Version 0.0.2-alpha }
+			{\normalsize for the "minimalthesis" LaTeX Documentclass, Version 0.0.2-alpha-1}
 		};
 
 		\begin{scope}[shift={(current page.center)}]

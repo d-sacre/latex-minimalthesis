@@ -261,7 +261,7 @@
 	% }
 
     \RequirePackage{siunitx}
-    \RequirePackage{mhchem}
+    \RequirePackage[version=4]{mhchem}
 
     % % plotting
     % \RequirePackage{tikz-3dplot}
