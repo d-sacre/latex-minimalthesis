@@ -7,8 +7,8 @@
 			\caption{Examples on how to typeset derivatives with the \texttt{derivative} package}
 			\begin{verbatim}
 				\pdv{f}{x}, \quad \odv{Q}{t}=\odv{s}{t}, \quad \pdv{f}{x,y}, \quad 
-				\derivset{\odv}[switch-*=false] \odv{y}{x}, \quad \odv[order=n]{y}{x}, \quad
-				\derivset{\odv}[] \odv*{\odv{y}{x}}{x}, \quad 
+				\derivset{\odv}[switch-*=false] \odv{y}{x}, \quad \odv[order=n]{y}{x}, 
+				\quad\derivset{\odv}[] \odv*{\odv{y}{x}}{x}, \quad 
 				\derivset{\pdv}[sort-method={sign,symbol,abs}] 
 				\pdv[order={c+kn,-b+2a}]{f}{x,y}
 			\end{verbatim}
@@ -62,8 +62,9 @@
 			\begin{tabular}{lcl}
 				\verb|\num{23,3}, \num{23.3}| & $\rightarrow$ & \num{23,3}, \num{23.3}\\[0.125cm]
 				\verb|\SI{23,3}{\volt}, \SI{23.3}{\volt}| & $\rightarrow$ & \SI{23,3}{\volt}, \SI{23.3}{\volt}\\[0.125cm]
-				\verb|\si{\kilo\metre}, \si{\kilogram\meter\per\second\squared}| & $\rightarrow$ & \si{\kilo\metre}, \si{\kilogram\meter\per\second\squared}\\[0.125cm]
-				\verb|\si[per-mode=fraction]{\kilogram\meter\per\second\squared}| & $\rightarrow$ & \si[per-mode=fraction]{\kilogram\meter\per\second\squared}\\[0.125cm]
+				\verb|\si{\kilo\metre}|,  & $\rightarrow$ & \si{\kilo\metre},\\[0.125cm]
+				\verb|\si{\kilogram\meter\per\second\squared}| & $\rightarrow$ & \si{\kilogram\meter\per\second\squared}\\[0.125cm]
+				\verb|\si[per-mode=fraction]{... ARG AS ABOVE ...}| & $\rightarrow$ & \si[per-mode=fraction]{\kilogram\meter\per\second\squared}\\[0.125cm]
 				\verb|$s = \SI{9.81}{\meter\per\second\squared}\cdot| & $\rightarrow$ &
 				$s = \SI{9.81}{\meter\per\second\squared}\cdot\int_{0}^{t}t\dd{t}$\\
 				\verb|\int_{0}^{t} t \dd{t}$| & & 

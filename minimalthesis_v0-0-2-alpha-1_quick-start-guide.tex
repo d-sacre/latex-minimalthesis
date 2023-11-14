@@ -26,6 +26,8 @@
 %\usepackage[uprightGreek]{newtxmath} % verify wether uprightGreek option is necessary
 %\renewcommand*\familydefault{\sfdefault}
 
+\usepackage{pagecolor}
+
  
 \def\releaseVersion{0.0.2-alpha-1}
 
@@ -65,8 +67,22 @@
 }
 
 \begin{document}
-	\mtGenerateTitlepage
+%	\mtGenerateTitlepage
+	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_custom-cover.tex}
+
 	\mtGenerateTOC
+	
+	\chapter{Preface}
+		\section{What is minimalthesis?}
+			A LaTeX documentclass for \verb|pdflatex|, which produces a minimalistic layout with minimal effort by the end user, but still allows for customization.
+		
+		\section{What is minimalthesis not (yet)?}
+			\begin{itemize}
+				\item feature complete,
+				\item Lua\LaTeX, Xe\TeX, etc. compatible,
+				\item \verb|otf|, \verb|ttf| font capable
+			\end{itemize}
+			
 	
 	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_chapter_general.tex}
 	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_chapter_bibliography.tex}

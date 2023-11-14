@@ -66,6 +66,7 @@
 
 \RequirePackage{csquotes}% quotation marks
 \RequirePackage{enumitem}% better control over itemize/enumerate
+\setlist{noitemsep}
 
 % page headers/footers
 % get the right marks independent of the page (even/odd)
