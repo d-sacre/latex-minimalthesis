@@ -213,25 +213,32 @@
                 \vfill
             }
             \ifthenelse{%
-                \equal{\pgfkeysvalueof{/mt/titlepage/thesis type/text}}{}%
+                \equal{\pgfkeysvalueof{/mt/thesis/type}}{}
             }{%
-                % if thesis type text is empty
-                {\pgfkeysvalueof{/mt/titlepage/thesis type/@formated}
-                \@mt@titlepage@thesisType@text@GENERATE\\}
-            }{%
-                {\pgfkeysvalueof{/mt/titlepage/thesis type/@formated}\\}
+                % if no thesis type specified, do nothing.
+            }{
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/titlepage/thesis type/text}}{}%
+                }{%
+                    % if thesis type text is empty
+                    {\pgfkeysvalueof{/mt/titlepage/thesis type/@formated}
+                    \@mt@titlepage@thesisType@text@GENERATE\\}
+                }{%
+                    {\pgfkeysvalueof{/mt/titlepage/thesis type/@formated}\\}
+                }
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/titlepage/legal identifier/text}}{}%
+                }{%
+                    % if legal identifier text is empty
+                    {\pgfkeysvalueof{/mt/titlepage/legal identifier/@formated}
+                    \@mt@titlepage@legalIdentifier@text@GENERATE}
+                    \vfil
+                }{%
+                    {\pgfkeysvalueof{/mt/titlepage/legal identifier/@formated}}
+                    \vfil
+                }
             }
-            \ifthenelse{%
-                \equal{\pgfkeysvalueof{/mt/titlepage/legal identifier/text}}{}%
-            }{%
-                % if legal identifier text is empty
-                {\pgfkeysvalueof{/mt/titlepage/legal identifier/@formated}
-                \@mt@titlepage@legalIdentifier@text@GENERATE}
-                \vfil
-            }{%
-                {\pgfkeysvalueof{/mt/titlepage/legal identifier/@formated}}
-                \vfil
-            }
+            
             \ifthenelse{%
                 \equal{\pgfkeysvalueof{titlepage/handed in by/text}}{}%
             }{%
@@ -290,6 +297,20 @@
             }
             \vfill
             % examination committe
+            % if no examiners specified, prevent examination committee from printing
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/thesis/examiners/chairman}}{}%
+            }{%
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/thesis/examiners/reviewers}}{}%
+                }{%
+                    \ifthenelse{%
+                        \equal{\pgfkeysvalueof{/mt/thesis/examiners/additional}}{}%
+                    }{%
+                        \pgfkeyssetvalue{/mt/titlepage/examination committee/title/text}{}%
+                    }{}%
+                }{}%
+            }{}%
             % TO-DO: Port this from minipage to table, so that the spacing is less ragged
             % ISSUE: pgfkey list expansion does not work inside of table
             \ifthenelse{%
