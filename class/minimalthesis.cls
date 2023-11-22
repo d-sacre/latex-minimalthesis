@@ -2,9 +2,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% start of file `./class/minimalthesis.cls'.                        %%
 %%                                                                   %%
-%% version: v0.0.2-alpha-1                                           %%
+%% version: v0.0.2-alpha-2                                           %%
 %% status: alpha                                                     %%
-%% file version: 2023-11-14                                          %%
+%% file version: 2023-11-22                                          %%
 %%                                                                   %%
 %% Copyright 2023 Daniel Sacré.                                      %%
 %%                                                                   %%    
@@ -24,8 +24,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % \setcounter{errorcontextlines}{100}
-\NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesClass{./class/minimalthesis}[2023-11-30 v0.0.2-alpha-1 Daniel Sacré LaTeX Project Public License version 1.3c]
+\NeedsTeXFormat{LaTeX2e}[2020-02-02] % should be set to the minimal version required, in this case 2020
+\ProvidesClass{./class/minimalthesis}[2023-11-22 v0.0.2-alpha-2 Daniel Sacré LaTeX Project Public License version 1.3c]
 
 \DeclareOption*{\OptionNotUsed}
 \ProcessOptions\relax
@@ -160,7 +160,8 @@
 \newcommand{\mtGenerateBibliography}{\printbibliography}
 
 
-\AddToHook{begindocument/before}{
+% \AddToHook{begindocument/before}{
+\AtEndPreamble{
     % Passing options to packages
         % geometry package
         \ifthenelse{%
@@ -277,7 +278,8 @@
     % % \RequirePackage{listings} % only if code snippets to be shown
 }
 
-\AddToHook{begindocument/end}{
+% \AddToHook{begindocument/end}{
+\AtEndPreamble{
     % creation and setup of the pdf meta data
         % create pdf title; if no specific pdf title is specified by the user, use thesis title and subtitle.
         % If no thesis subtitle is specified, use only thesis title
