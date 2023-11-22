@@ -19,7 +19,7 @@
 # these rules might exclude image files for figures etc.
 # *.ps
 # *.eps
-# *.pdf
+*.pdf
 
 ## Generated if empty string is given at "Please type another file name for output:"
 .pdf
@@ -301,6 +301,8 @@ TSWLatexianTemp*
 #*Notes.bib
 
 # excluded pdfs
-#!./class/img/minimalthesis_logo.pdf
-#!./minimalthesis_v0-0-2-alpha-1_mwe.pdf
-#!./minimalthesis_v0-0-2-alpha-1_quick-start-guide.pdf
+!./class/img/minimalthesis_logo.pdf
+!./class/img/minimalthesis_frontcover_concept.pdf
+!./class/img/typewriter_openclipart_edited.pdf
+!./minimalthesis_v0-0-2-alpha-2_mwe.pdf
+!./minimalthesis_v0-0-2-alpha-2_quick-start-guide.pdf
