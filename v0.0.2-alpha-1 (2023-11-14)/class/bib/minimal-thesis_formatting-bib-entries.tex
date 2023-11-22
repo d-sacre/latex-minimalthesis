@@ -1,0 +1,133 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% start of file                                                     %%
+%%`./class/bib/minimal-thesis_formatting-bib-entries.tex'.           %%
+%%                                                                   %%
+%% version: v0.0.2-alpha-1                                           %%
+%% status: alpha                                                     %%
+%% file version: 2023-11-14                                          %%
+%%                                                                   %%
+%% Copyright 2023 Daniel Sacré.                                      %%
+%%                                                                   %%    
+%% A very simple document class for writing theses, especially in    %%
+%% natural sciences.                                                 %%
+%%                                                                   %%
+%% This piece of software comes without any warranty, not even that  %%
+%% it is fit for the intended purpose. Since it is an alpha-release, %%
+%% Bug reports and suggestions via github are highly welcome.        %%
+%%                                                                   %%
+%% LICENSE:                                                          %%
+%% This work may be distributed and/or modified under the            %%
+%% conditions of the LaTeX Project Public License version 1.3c, or   %%
+%% (at your option) any later version. The full license text is      %%
+%% available at http://www.latex-project.org/lppl/.                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareFieldFormat*{title}{\mkbibitalic{#1}}
+\DeclareFieldFormat*{journaltitle}{#1}
+\DeclareFieldFormat*{date}{#1}
+\DeclareFieldFormat*{volume}{\mkbibbold{#1}}
+
+\newtoggle{bbx:thesistitle}
+\DeclareBibliographyOption{thesistitle}[true]{%
+	\settoggle{bbx:thesistitle}{#1}%
+}
+
+\DeclareFieldFormat{doi}{%
+  \newline
+  \mkbibacro{DOI}\addcolon\space
+    \ifhyperref
+      {\href{http://dx.doi.org/#1}{\nolinkurl{#1}}}
+      {\nolinkurl{#1}}
+}
+
+\DeclareBibliographyDriver{thesis}{%
+		\usebibmacro{bibindex}%
+		\usebibmacro{begentry}%
+		\usebibmacro{author}%
+		\setunit{\labelnamepunct}\newblock
+		\iftoggle{bbx:thesistitle}
+		{%
+			\usebibmacro{title}%
+			\newunit
+		}
+		{}%
+		\printlist{language}%
+		\newunit\newblock
+		\usebibmacro{byauthor}%
+		\newunit\newblock
+		\printfield{note}%
+		\newunit\newblock
+		\printfield{type}%
+		\newunit
+		\usebibmacro{institution+location+date}%
+		\newunit\newblock
+		\usebibmacro{chapter+pages}%
+		\newunit
+		\printfield{pagetotal}%
+		\newunit\newblock
+		\iftoggle{bbx:isbn}
+		{\printfield{isbn}}
+		{}%
+		\newunit\newblock
+		\usebibmacro{doi+eprint+url}%
+		\newunit\newblock
+		\usebibmacro{addendum+pubstate}%
+		\setunit{\bibpagerefpunct}\newblock
+		\usebibmacro{pageref}%
+		\newunit\newblock
+		\usebibmacro{related}%
+		\usebibmacro{finentry}%
+}
+
+\DeclareBibliographyDriver{arxiv}{%
+		\usebibmacro{bibindex}%
+		\usebibmacro{begentry}%
+		\usebibmacro{author}%
+		\setunit{\labelnamepunct}\newblock
+		\iftoggle{bbx:thesistitle}
+		{%
+			\usebibmacro{title}%
+			\newunit
+		}
+		{}%
+		\printlist{language}%
+		\newunit\newblock
+		\usebibmacro{byauthor}%
+		\newunit\newblock
+		\printfield{note}%
+		\newunit\newblock
+		\printfield{type}%
+		\newunit\newblock
+		\usebibmacro{journal}
+		\newunit\newblock
+		\usebibmacro{date}
+		\newunit\newblock
+		\usebibmacro{doi+eprint+url}%
+		\newunit\newblock
+		\usebibmacro{addendum+pubstate}%
+		\setunit{\bibpagerefpunct}\newblock
+		\usebibmacro{pageref}%
+		\newunit\newblock
+		\usebibmacro{related}%
+		\usebibmacro{finentry}%
+}
+
+
+\DeclareCiteCommand{\citejournal}
+{\usebibmacro{prenote}}
+{\usebibmacro{citeindex}%
+	\usebibmacro{journal}
+}%volume+issue+month+year}}
+{\multicitedelim}
+{\usebibmacro{postnote}}
+
+
+\DeclareFieldFormat{url}{\newline URL: \url{#1}}
+\renewcommand*{\labelnamepunct}{\addcolon\addspace}
+
+\makeatletter
+	\let\partbackup\l@part
+	\renewcommand*\l@part[2]{\partbackup{#1}{}}
+\makeatother

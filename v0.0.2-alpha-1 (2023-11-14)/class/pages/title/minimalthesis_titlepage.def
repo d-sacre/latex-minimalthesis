@@ -1,0 +1,391 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% start of file `./class/pages/title/minimalthesis_titlepage.def'.  %%
+%%                                                                   %%
+%% version: v0.0.2-alpha-1                                           %%
+%% status: alpha                                                     %%
+%% file version: 2023-11-14                                          %%
+%%                                                                   %%
+%% Copyright 2023 Daniel Sacré.                                      %%
+%%                                                                   %%    
+%% A very simple document class for writing theses, especially in    %%
+%% natural sciences.                                                 %%
+%%                                                                   %%
+%% This piece of software comes without any warranty, not even that  %%
+%% it is fit for the intended purpose. Since it is an alpha-release, %%
+%% Bug reports and suggestions via github are highly welcome.        %%
+%%                                                                   %%
+%% LICENSE:                                                          %%
+%% This work may be distributed and/or modified under the            %%
+%% conditions of the LaTeX Project Public License version 1.3c, or   %%
+%% (at your option) any later version. The full license text is      %%
+%% available at http://www.latex-project.org/lppl/.                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+    % counters
+    \newcounter{@mt@thesis@titlepage@reviewers@counter}
+
+    \newcommand{\@mt@titlepage@logo@insertableElement@GENERATE}{
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/logo/object type}}{image}}{%
+            % object type = image
+            \vspace{0.5cm}
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/titlepage/logo/height}}{}%
+            }{%
+                % no height specified
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/titlepage/logo/width}}{}%
+                }{%
+                    % no height, no width specified
+                    \includegraphics{\pgfkeysvalueof{/mt/titlepage/logo/file path}}%
+                }{
+                    % no height specified, width specified
+                    \includegraphics[width = \pgfkeysvalueof{/mt/titlepage/logo/width}]{\pgfkeysvalueof{/mt/titlepage/logo/file path}}
+                }
+            }{%
+                % height specified
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/titlepage/logo/width}}{}%
+                }{%
+                    % height specified, no width specified
+                    % REMARK: To prevent issues with parsing of optional arguments by includegraphics, writing the full macro for each case.
+                    % FUTURE: Improve logic
+                    \includegraphics[height = \pgfkeysvalueof{/mt/titlepage/logo/height}]{\pgfkeysvalueof{/mt/titlepage/logo/file path}}
+                }{%
+                    % height and width specified
+                    \includegraphics[%
+                        height = \pgfkeysvalueof{/mt/titlepage/logo/height},%
+                        width = \pgfkeysvalueof{/mt/titlepage/logo/width}%
+                    ]{\pgfkeysvalueof{/mt/titlepage/logo/file path}}%
+                }%
+            }%
+            \vspace{0.5cm}
+        }{unrecognized type}%
+    }
+
+    \newcommand{\@mt@titlepage@thesisType@text@GENERATE}{
+        \pgfkeysvalueof{/mt/thesis/type}%
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/thesis/type}}{Dissertation}%
+        }{}{~Thesis}
+    }
+
+    \newcommand{\@mt@titlepage@legalIdentifier@text@GENERATE}{
+        \pgfkeysvalueof{/mt/titlepage/legal identifier/prefix}\\
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/thesis/type}}{Bachelor}%
+        }{%
+            \enquote{\pgfkeysvalueof{/mt/academic degree identifiers/bachelor}}%
+        }{}%
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/thesis/type}}{Master}%
+        }{%
+            \enquote{\pgfkeysvalueof{/mt/academic degree identifiers/master}}%
+        }{}%
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/thesis/type}}{Dissertation}}{%
+            \enquote{\pgfkeysvalueof{/mt/academic degree identifiers/phd}}%
+        }{}%
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/thesis/type}}{Doctoral}}{%
+            \enquote{\pgfkeysvalueof{/mt/academic degree identifiers/phd}}%
+        }{}%
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/thesis/type}}{PhD}}{%
+            \enquote{\pgfkeysvalueof{/mt/academic degree identifiers/phd}}%
+        }{}%
+    }
+
+    \newcommand{\@mt@titlepage@affiliation@formated}{
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/alignment}}{rows}%
+        }{%
+            % listing style rows; simply return input with styling applied
+            \pgfkeysvalueof{/mt/thesis/author/affiliation}%
+        }{%
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/alignment}}{cols}%
+            }{%
+                % listing style columns
+                \pgfkeys{body loop/.code={{##1}\\},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliation}}%
+            }{%
+                UNKOWN OPTION %
+                % needs error message
+            }
+        }
+    }
+
+    \newcommand{\@mt@titlepage@affiliations@singleElementLoop}[2]{
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/alignment}}{rows}%
+        }{%
+            % listing style rows; simply return input with styling applied
+            {%
+                \pgfkeysvalueof{/mt/titlepage/author affiliations/font/family/}%
+                \pgfkeysvalueof{/mt/titlepage/author affiliations/font/size}%
+                \color{\pgfkeysvalueof{/mt/titlepage/author affiliations/font/color}}%
+                \@mt@titlepage@authorAffiliations@font@weight%
+                #1\\%
+            }%
+        }{%
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/alignment}}{cols}%
+            }{%
+                % listing style columns
+                \begin{minipage}[t]{\@mt@titlepage@affiliations@subcontainer@width\linewidth}
+                    \centering
+                    \pgfkeysvalueof{/mt/titlepage/author affiliations/font/family/}%
+                    \pgfkeysvalueof{/mt/titlepage/author affiliations/font/size}%
+                    \color{\pgfkeysvalueof{/mt/titlepage/author affiliations/font/color}}%
+                    \@mt@titlepage@authorAffiliations@font@weight%
+                    \foreach \element in {#1}{\element\\}%
+                \end{minipage}
+                \hfil
+            }{%
+                UNKOWN OPTION%
+                % needs error message
+            }
+        }
+    }
+
+    \newcommand{\@mt@titlepage@affiliations@formated}{%
+        \ifthenelse{%
+            \equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/alignment}}{cols}%
+        }{%
+            % calculation of number of affiliations
+            \newcounter{@mt@tmp@counter}
+            \setcounter{@mt@tmp@counter}{0}
+            \pgfkeys{body loop/.code={\stepcounter{@mt@tmp@counter}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliations}}%
+            \pgfmathsetmacro{\@mt@titlepage@affiliations@subcontainer@width}{(1/\the@mt@tmp@counter)*\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/column entry width factor}}
+            \begin{minipage}{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/column container width}}
+                \centering
+                \hfil
+                \pgfkeys{body loop/.code={\@mt@titlepage@affiliations@singleElementLoop{##1}{\@mt@titlepage@affiliations@subcontainer@width}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliations}}%
+            \end{minipage}
+        }{%
+            \pgfkeys{body loop/.code={\@mt@titlepage@affiliations@singleElementLoop{##1}{\@mt@titlepage@affiliations@subcontainer@width}},body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/author/affiliations}}%
+        }
+    }%
+
+    \newcommand{\@mt@titlepage@examinationCommittee@reviewers@formated}{%
+        \pgfkeys{body loop/.code={%
+                \\{%
+                    \raggedright%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/descriptor/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/descriptor/font/size}
+                    \@mt@titlepage@examinationCommittee@reviewers@descriptor@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/descriptor/font/color}}%
+                    \the@mt@thesis@titlepage@reviewers@counter.~%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/descriptor/text}%
+                } \hfill {%
+                    \raggedleft
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/names/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/names/font/size}
+                    \@mt@titlepage@examinationCommittee@reviewers@names@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/examination committee/reviewers/names/font/color}}%
+                    {##1}%
+                }\stepcounter{@mt@thesis@titlepage@reviewers@counter}
+            },%
+            body loop/.list/.expanded=\pgfkeysvalueof{/mt/thesis/examiners/reviewers}%
+        }%
+    }%
+
+    \newcommand{\mtGenerateTitlepage}{%
+        \newgeometry{twoside,outer=2.5cm,inner=3.5cm,top=2cm,bottom=2cm,includeheadfoot}
+        \begin{titlepage}
+            \centering
+            \vfil
+            % needs to leak font settings so that line break distance to optional subtitle is correct
+            \pgfkeysvalueof{/mt/titlepage/title/@formated}% 
+            \ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/subtitle/text}}{}}{%
+                % if no subtitle is specified
+                % nothing to do
+            }{%
+                \\
+                {\pgfkeysvalueof{/mt/titlepage/subtitle/@formated}\\}%
+                \normalfont\normalsize% required to reset any changes from the title
+            }%
+            \vfill
+            \ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/logo/object type}}{}}{%
+                % if no logo is specified
+                % nothing to do
+            }{%
+                \pgfkeysvalueof{/mt/titlepage/logo/@insertable_element}\\
+                \vfill
+            }
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/thesis/type}}{}
+            }{%
+                % if no thesis type specified, do nothing.
+            }{
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/titlepage/thesis type/text}}{}%
+                }{%
+                    % if thesis type text is empty
+                    {\pgfkeysvalueof{/mt/titlepage/thesis type/@formated}
+                    \@mt@titlepage@thesisType@text@GENERATE\\}
+                }{%
+                    {\pgfkeysvalueof{/mt/titlepage/thesis type/@formated}\\}
+                }
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/titlepage/legal identifier/text}}{}%
+                }{%
+                    % if legal identifier text is empty
+                    {\pgfkeysvalueof{/mt/titlepage/legal identifier/@formated}
+                    \@mt@titlepage@legalIdentifier@text@GENERATE}
+                    \vfil
+                }{%
+                    {\pgfkeysvalueof{/mt/titlepage/legal identifier/@formated}}
+                    \vfil
+                }
+            }
+            
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{titlepage/handed in by/text}}{}%
+            }{%
+                % no handed in by text is specified
+                % nothing to do
+            }{%
+                {\pgfkeysvalueof{/mt/titlepage/handed in by/@formated}\\}%
+            }
+            
+            % author formatted
+            % TO DO: Needs to change font when main document font is snas serif
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/thesis/author/place of birth}}{}
+            }{%
+                {\pgfkeysvalueof{/mt/titlepage/author/@formated}}%
+            }{%
+                { \pgfkeysvalueof{/mt/titlepage/author/@formated}\\[0.125cm]}%
+            }%
+            
+            % place of birth formatted
+            \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/thesis/author/place of birth}}{}
+                }{
+                    % no place of birth specified
+                    % nothing to do
+                }{%
+                    {\pgfkeys{/mt/titlepage/place of birth/@formated}}% peculiarity: setting line break here destroys \vfil(l) for author affiliations
+                }%
+            \ifthenelse{
+                \equal{\pgfkeysvalueof{/mt/thesis/author/affiliations}}{}
+            }{%
+                % no author multiple affiliations specified
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/thesis/author/affiliation}}{}
+                }{%
+                    % no single affiliation specified
+                    % nothing to do
+                }{%
+                    % single author affiliation specified
+                    \pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/padding/vertical}
+                    \@mt@titlepage@affiliation@formated%
+                }
+            }{%
+                % if author affiliations specified
+                \pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/padding/vertical}
+                \@mt@titlepage@affiliations@formated%
+            }
+            \vfill
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/titlepage/date/text}}{}%
+            }{%
+                % if no title page date text specified
+                % nothing to do
+            }{%
+                {\pgfkeysvalueof{/mt/titlepage/date/@formated}}%
+            }
+            \vfill
+            % examination committe
+            % if no examiners specified, prevent examination committee from printing
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/thesis/examiners/chairman}}{}%
+            }{%
+                \ifthenelse{%
+                    \equal{\pgfkeysvalueof{/mt/thesis/examiners/reviewers}}{}%
+                }{%
+                    \ifthenelse{%
+                        \equal{\pgfkeysvalueof{/mt/thesis/examiners/additional}}{}%
+                    }{%
+                        \pgfkeyssetvalue{/mt/titlepage/examination committee/title/text}{}%
+                    }{}%
+                }{}%
+            }{}%
+            % TO-DO: Port this from minipage to table, so that the spacing is less ragged
+            % ISSUE: pgfkey list expansion does not work inside of table
+            \ifthenelse{%
+                \equal{\pgfkeysvalueof{/mt/titlepage/examination committee/title/text}}{}%
+            }{%
+                % if no examination comittee title is specified
+                % nothing to do
+            }{%
+                \setcounter{@mt@thesis@titlepage@reviewers@counter}{1}
+                \begin{minipage}{\pgfkeysvalueof{/mt/titlepage/examination committee/width}}
+                    {\raggedright\pgfkeysvalueof{/mt/titlepage/examination committee/title/@formated}\\[\pgfkeysvalueof{/mt/titlepage/examination committee/title/padding/vertical}]}
+                    \ifthenelse{%
+                        \equal{\pgfkeysvalueof{/mt/thesis/examiners/chairman}}{}%
+                    }{%
+                        % if no chairman specified
+                        % nothing to do
+                    }{%
+                        {%
+                            \raggedright%
+                            \pgfkeysvalueof{/mt/titlepage/examination committee/chairman/descriptor/font/family}%
+                            \pgfkeysvalueof{/mt/titlepage/examination committee/chairman/descriptor/font/size}%
+                            \@mt@titlepage@examinationCommittee@chairman@descriptor@font@weight%
+                            \color{\pgfkeysvalueof{/mt/titlepage/examination committee/chairman/descriptor/font/color}}%
+                            \pgfkeysvalueof{/mt/titlepage/examination committee/chairman/descriptor/text}%
+                        }%
+                        \hfill%
+                        {%
+                            \raggedleft%
+                            \pgfkeysvalueof{/mt/titlepage/examination committee/chairman/name/font/family}%
+                            \pgfkeysvalueof{/mt/titlepage/examination committee/chairman/name/font/size}%
+                            \@mt@titlepage@examinationCommittee@chairman@name@font@weight%
+                            \color{\pgfkeysvalueof{/mt/titlepage/examination committee/chairman/name/font/color}}%
+                            \pgfkeysvalueof{/mt/thesis/examiners/chairman}%
+                        }%
+                    }%
+                    \ifthenelse{%
+                        \equal{\pgfkeysvalueof{/mt/thesis/examiners/reviewers}}{}%
+                    }{%
+                        % no reviewers specified
+                        % nothing to do
+                    }{%
+                        % \pgfkeysvalueof{/mt/titlepage/examination comitte/reviewers/@formated}
+                        \@mt@titlepage@examinationCommittee@reviewers@formated%
+                    }%
+                    \ifthenelse{%
+                        \equal{\pgfkeysvalueof{/mt/thesis/examiners/additional}}{}%
+                    }{%
+                        % no additional reviewer specified
+                        % nothing to do
+                    }{%
+                    {%
+                            \\%
+                            \raggedright%
+                            \pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/descriptor/font/family}%
+                            \pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/descriptor/font/size}%
+                            \@mt@titlepage@examinationCommittee@additionalExaminer@descriptor@font@weight%
+                            \color{\pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/descriptor/font/color}}%
+                            \pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/descriptor/text}%
+                        } 
+                        \hfill 
+                        {%
+                            \raggedleft%
+                            \pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/name/font/family}%
+                            \pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/name/font/size}%
+                            \@mt@titlepage@examinationCommittee@additionalExaminer@name@font@weight%
+                            \color{\pgfkeysvalueof{/mt/titlepage/examination committee/additional examiner/name/font/color}}%
+                            \pgfkeysvalueof{/mt/thesis/examiners/additional}%
+                        }
+                    }%
+                \end{minipage}
+        
+            }
+            \normalsize\normalfont % set font to document default to prevent any issues futher along
+        \end{titlepage}
+        
+        \newpage\null\thispagestyle{empty}
+    } 
+\makeatother
