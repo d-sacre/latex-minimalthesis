@@ -1,0 +1,331 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% start of file `./class/pgfkeys/minimalthesis_pgfkeys.setup'.      %%
+%%                                                                   %%
+%% version: v0.0.2-alpha-2                                           %%
+%% status: alpha                                                     %%
+%% file version: 2023-11-22                                          %%
+%%                                                                   %%
+%% Copyright 2023 Daniel Sacré.                                      %%
+%%                                                                   %%    
+%% A very simple document class for writing theses, especially in    %%
+%% natural sciences.                                                 %%
+%%                                                                   %%
+%% This piece of software comes without any warranty, not even that  %%
+%% it is fit for the intended purpose. Since it is an alpha-release, %%
+%% Bug reports and suggestions via github are highly welcome.        %%
+%%                                                                   %%
+%% LICENSE:                                                          %%
+%% This work may be distributed and/or modified under the            %%
+%% conditions of the LaTeX Project Public License version 1.3c, or   %%
+%% (at your option) any later version. The full license text is      %%
+%% available at http://www.latex-project.org/lppl/.                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+    % macros for storing titlepage font weight data
+    \newcommand{\@mt@titlepage@title@font@weight}{\bfseries}
+    \newcommand{\@mt@titlepage@subtitle@font@weight}{\bfseries}
+    \newcommand{\@mt@titlepage@thesisType@font@weight}{}
+    \newcommand{\@mt@titlepage@legalIdentifier@font@weight}{}
+    \newcommand{\@mt@titlepage@handedInBy@font@weight}{}
+    \newcommand{\@mt@titlepage@author@font@weight}{}
+    \newcommand{\@mt@titlepage@placeOfBirth@font@weight}{}
+    \newcommand{\@mt@titlepage@authorAffiliations@font@weight}{}
+    \newcommand{\@mt@titlepage@date@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@title@font@weight}{\bfseries}
+    \newcommand{\@mt@titlepage@examinationCommittee@chairman@descriptor@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@chairman@name@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@reviewers@descriptor@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@reviewers@names@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@additionalExaminer@descriptor@font@weight}{}
+    \newcommand{\@mt@titlepage@examinationCommittee@additionalExaminer@name@font@weight}{}
+
+    % pgfkeys setup
+    \pgfkeys{%
+        /handlers/.is setter/.code=\pgfkeysedef{\pgfkeyscurrentpath}{%
+            \noexpand\pgfqkeys{\pgfkeyscurrentpath}{##1}%
+        },%
+        /handlers/.colordef/.code = {},
+        /mt/.cd,%
+        thesis/.is setter,
+            thesis/title/.initial,%
+            thesis/subtitle/.initial,%
+            thesis/type/.initial,%
+            thesis/author/.is setter,
+                thesis/author/name/.initial,
+                thesis/author/place of birth/.initial,
+                thesis/author/affiliation/.initial,
+                thesis/author/affiliations/.initial,
+            thesis/type/.initial,
+            thesis/date/.initial = \today,
+            thesis/examiners/.is setter,
+                thesis/examiners/chairman/.initial,
+                thesis/examiners/reviewers/.initial,
+                thesis/examiners/additional/.initial,
+        visual styling/.is setter,
+            visual styling/default font/.initial = serif,
+            visual styling/color scheme/.is setter,
+                visual styling/color scheme/type/.initial = plain,
+                visual styling/color scheme/colors/.is setter,
+                    visual styling/color scheme/colors/accent/.is setter,
+                        visual styling/color scheme/colors/accent/primary/.is setter,
+                            visual styling/color scheme/colors/accent/primary/set/.initial = cyan,
+                            visual styling/color scheme/colors/accent/primary/define/.is setter,
+                                visual styling/color scheme/colors/accent/primary/define/color model/.initial,
+                                visual styling/color scheme/colors/accent/primary/define/color value/.initial,
+                        visual styling/color scheme/colors/accent/secondary/.is setter,
+                            visual styling/color scheme/colors/accent/secondary/set/.initial = gray!50!black,
+                            visual styling/color scheme/colors/accent/secondary/define/.is setter,
+                                visual styling/color scheme/colors/accent/secondary/define/color model/.initial,
+                                visual styling/color scheme/colors/accent/secondary/define/color value/.initial,
+                        visual styling/color scheme/colors/accent/tertiary/.is setter,
+                            visual styling/color scheme/colors/accent/tertiary/set/.initial = gray,
+                            visual styling/color scheme/colors/accent/tertiary/define/.is setter,
+                                visual styling/color scheme/colors/accent/tertiary/define/color model/.initial,
+                                visual styling/color scheme/colors/accent/tertiary/define/color value/.initial,
+            visual styling/header/.is setter,
+                visual styling/header/head seperator line/.is setter,
+                visual styling/header/head seperator line/show/.initial = true,
+                visual styling/header/head seperator line/thickness/.initial = 0.5 pt,
+            visual styling/table of contents/.is setter,
+                visual styling/table of contents/propagate color scheme/.initial = true,
+            visual styling/caption/.is setter,
+                visual styling/caption/propagate color scheme/.initial = true,
+        modules/.initial,
+        @modules/.is setter,
+            @modules/@listOfValidModuleOptions/.initial = {mathematics, physics, chemistry, coding, data visualization},
+            @modules/@mathematics/.is setter,
+                @modules/@mathematics/load/.initial = false,
+                @modules/@mathematics/packages/.initial = {%
+                    \RequirePackage{amsmath,bm,amssymb}%
+                    \RequirePackage{physics,derivative} % derivative, differentials
+                    \RequirePackage{harpoon} % provides \overrightharp
+                }, % not working properly
+            @modules/@physics/.is setter,
+                @modules/@physics/@load/.initial = false,
+                @modules/@physics/@packages/.initial = {},
+            @modules/@chemistry/.is setter, 
+                @modules/@chemistry/@load/.initial = false,
+                @modules/@chemistry/@packages/.initial = {},
+            @modules/@coding/.is setter,
+                @modules/@coding/@load/.initial = false,
+                @modules/@coding/@packages/.initial = {},
+            @modules/@data visualization/.is setter,
+                @modules/@data visualization/@load/.initial = false,
+                @modules/@data visualization/@packages/.initial = {},
+        bibliography/.is setter,
+            bibliography/file path/.initial,
+        academic degree identifiers/.is setter,
+            academic degree identifiers/bachelor/.initial = {Bachelor of Science (B.Sc.)},
+            academic degree identifiers/master/.initial = {Master of Science (M.Sc.)},
+            academic degree identifiers/phd/.initial = {Philosophical Doctor (PhD)},
+        pdfmetadata/.is setter,
+            pdfmetadata/title/.initial,
+            pdfmetadata/subject/.initial = {Academic Thesis},
+            pdfmetadata/author/.initial  = \pgfkeysvalueof{/mt/thesis/author/name},
+            pdfmetadata/keywords/.initial = {Academic Thesis},
+            pdfmetadata/creator/.initial = {LaTeX with minimalthesis v0.0.2-alpha-1 and hyperref},
+        titlepage/.is setter,
+            titlepage/title/.is setter,
+                titlepage/title/text/.initial = \pgfkeysvalueof{/mt/thesis/title},
+                titlepage/title/font/.is setter,
+                    titlepage/title/font/family/.initial = \sffamily,
+                    titlepage/title/font/size/.initial = \Huge,
+                    titlepage/title/font/weight/.store in = \@mt@titlepage@title@font@weight,
+                    titlepage/title/font/color/.initial = black,
+                titlepage/title/@formated/.initial ={%
+                    \pgfkeysvalueof{/mt/titlepage/title/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/title/font/size}%
+                    \@mt@titlepage@title@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/title/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/title/text}%
+                },
+            titlepage/subtitle/.is setter,
+                titlepage/subtitle/text/.initial = \pgfkeysvalueof{/mt/thesis/subtitle},
+                titlepage/subtitle/font/.is setter,
+                    titlepage/subtitle/font/family/.initial = \normalfont,
+                    titlepage/subtitle/font/size/.initial = \huge,
+                    titlepage/subtitle/font/weight/.store in = \@mt@titlepage@subtitle@font@weight,
+                    titlepage/subtitle/font/color/.initial = black,
+                titlepage/subtitle/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/subtitle/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/subtitle/font/size}%
+                    \@mt@titlepage@subtitle@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/subtitle/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/subtitle/text}%
+                },
+            titlepage/logo/.is setter,
+                titlepage/logo/object type/.initial,
+                titlepage/logo/file path/.initial,
+                titlepage/logo/height/.initial,
+                titlepage/logo/width/.initial,
+            titlepage/logo/@insertable_element/.initial = {%
+                \@mt@titlepage@logo@insertableElement@GENERATE%
+            },%
+            titlepage/thesis type/.is setter,% 
+                titlepage/thesis type/text/.initial,
+                titlepage/thesis type/font/.is setter,
+                    titlepage/thesis type/font/family/.initial = \normalfont, 
+                    titlepage/thesis type/font/size/.initial = \Large,
+                    titlepage/thesis type/font/weight/.store in = \@mt@titlepage@thesisType@font@weight,
+                    titlepage/thesis type/font/color/.initial = black,
+                titlepage/thesis type/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/thesis type/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/thesis type/font/size}%
+                    \@mt@titlepage@thesisType@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/thesis type/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/thesis type/text}%
+                },
+            titlepage/legal identifier/.is setter,% 
+                titlepage/legal identifier/text/.initial,
+                titlepage/legal identifier/prefix/.initial = To obtain the Academic Degree,
+                titlepage/legal identifier/font/.is setter,
+                    titlepage/legal identifier/font/family/.initial = \normalfont, % needs to be changed if main document font is set to sans serif
+                    titlepage/legal identifier/font/size/.initial = \large,
+                    titlepage/legal identifier/font/weight/.store in = \@mt@titlepage@legalIdentifier@font@weight,
+                    titlepage/legal identifier/font/color/.initial = black,
+                titlepage/legal identifier/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/legal identifier/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/legal identifier/font/size}%
+                    \@mt@titlepage@legalIdentifier@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/legal identifier/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/legal identifier/text}%
+                },
+            titlepage/handed in by/.is setter,
+                titlepage/handed in by/text/.initial = handed in by,
+                titlepage/handed in by/font/.is setter,
+                    titlepage/handed in by/font/family/.initial = \normalfont,
+                    titlepage/handed in by/font/size/.initial = \large,
+                    titlepage/handed in by/font/weight/.store in = \@mt@titlepage@handedInBy@font@weight,
+                    titlepage/handed in by/font/color/.initial = black,
+                titlepage/handed in by/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/handed in by/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/handed in by/font/size}%
+                    \@mt@titlepage@handedInBy@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/handed in by/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/handed in by/text}%
+                },%
+            titlepage/author/.is setter,% 
+                titlepage/author/text/.initial = \pgfkeysvalueof{/mt/thesis/author/name},
+                titlepage/author/font/.is setter,
+                    titlepage/author/font/family/.initial = \scshape, % needs to be changed if main document font is set to sans serif
+                    titlepage/author/font/size/.initial = \Large,
+                    titlepage/author/font/weight/.store in = \@mt@titlepage@author@font@weight,
+                    titlepage/author/font/color/.initial = black,
+                titlepage/author/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/author/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/author/font/size}%
+                    \@mt@titlepage@author@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/author/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/author/text}%
+                },%
+            titlepage/place of birth/.is setter,%
+                titlepage/place of birth/prefix/.initial = {born in},
+                titlepage/place of birth/text/.initial = {\pgfkeysvalueof{/mt/titlepage/place of birth/prefix}~\pgfkeysvalueof{/mt/thesis/author/place of birth}},
+                titlepage/place of birth/font/.is setter,
+                    titlepage/place of birth/font/family/.initial = \normalfont,
+                    titlepage/place of birth/font/size/.initial = \large,
+                    titlepage/place of birth/font/weight/.store in = \@mt@titlepage@placeOfBirth@font@weight,
+                    titlepage/place of birth/font/color/.initial = black,
+                titlepage/place of birth/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/place of birth/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/place of birth/font/size}%
+                    \@mt@titlepage@placeOfBirth@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/place of birth/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/place of birth/text}%
+                },%
+            titlepage/author affiliations/.is setter,
+                titlepage/author affiliations/font/.is setter,
+                    titlepage/author affiliations/font/family/.initial = \normalfont,
+                    titlepage/author affiliations/font/size/.initial = \normalsize,
+                    titlepage/author affiliations/font/weight/.store in = \@mt@titlepage@authorAffiliations@font@weight,
+                    titlepage/author affiliations/font/color/.initial = black,
+                titlepage/author affiliations/listing style/.is setter,
+                    titlepage/author affiliations/listing style/alignment/.initial = rows,
+                    titlepage/author affiliations/listing style/padding/.is setter, 
+                        titlepage/author affiliations/listing style/padding/vertical/.initial = {\ifthenelse{\equal{\pgfkeysvalueof{/mt/titlepage/author affiliations/listing style/alignment}}{rows}}{\vfil}{\vfill}},
+                    titlepage/author affiliations/listing style/column container width/.initial = \linewidth,
+                    titlepage/author affiliations/listing style/column entry width factor/.initial = 0.75,
+            titlepage/date/.is setter,%
+                titlepage/date/text/.initial = \pgfkeysvalueof{/mt/thesis/date},
+                titlepage/date/font/.is setter,
+                    titlepage/date/font/family/.initial = \normalfont,
+                    titlepage/date/font/size/.initial = \normalsize,
+                    titlepage/date/font/weight/.store in = \@mt@titlepage@date@font@weight,
+                    titlepage/date/font/color/.initial = black,
+                titlepage/date/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/date/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/date/font/size}%
+                    \@mt@titlepage@date@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/date/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/date/text}%
+                },%
+            titlepage/examination committee/.is setter,%
+                titlepage/examination committee/width/.initial = 0.66\linewidth,
+                titlepage/examination committee/title/.is setter,
+                    titlepage/examination committee/title/text/.initial = {Examination Committee:},
+                    titlepage/examination committee/title/padding/.is setter,
+                        titlepage/examination committee/title/padding/vertical/.initial = {0.125cm},
+                    titlepage/examination committee/title/font/.is setter,
+                        titlepage/examination committee/title/font/family/.initial = \normalfont,
+                        titlepage/examination committee/title/font/size/.initial = \normalsize,
+                        titlepage/examination committee/title/font/weight/.store in = \@mt@titlepage@examinationCommittee@title@font@weight,
+                        titlepage/examination committee/title/font/color/.initial = black,
+                    titlepage/examination committee/chairman/.is setter,
+                        titlepage/examination committee/chairman/descriptor/.is setter,
+                            titlepage/examination committee/chairman/descriptor/text/.initial = {Chairman:},
+                            titlepage/examination committee/chairman/descriptor/font/.is setter,
+                                titlepage/examination committee/chairman/descriptor/font/family/.initial = \normalfont,
+                                titlepage/examination committee/chairman/descriptor/font/size/.initial = \normalsize,
+                                titlepage/examination committee/chairman/descriptor/font/weight/.store in = \@mt@titlepage@examinationCommittee@chairman@descriptor@font@weight,
+                                titlepage/examination committee/chairman/descriptor/font/color/.initial = black,
+                        titlepage/examination committee/chairman/name/.is setter,
+                            titlepage/examination committee/chairman/name/font/.is setter,
+                                titlepage/examination committee/chairman/name/font/family/.initial = \normalfont,
+                                titlepage/examination committee/chairman/name/font/size/.initial = \normalsize,
+                                titlepage/examination committee/chairman/name/font/weight/.store in = \@mt@titlepage@examinationCommittee@chairman@name@font@weight,
+                                titlepage/examination committee/chairman/name/font/color/.initial = black,
+                    titlepage/examination committee/reviewers/.is setter,
+                        titlepage/examination committee/reviewers/descriptor/.is setter,
+                            titlepage/examination committee/reviewers/descriptor/text/.initial = {Reviewer:},
+                            titlepage/examination committee/reviewers/descriptor/font/.is setter,
+                                titlepage/examination committee/reviewers/descriptor/font/family/.initial = \normalfont,
+                                titlepage/examination committee/reviewers/descriptor/font/size/.initial = \normalsize,
+                                titlepage/examination committee/reviewers/descriptor/font/weight/.store in = \@mt@titlepage@examinationCommittee@reviewers@descriptor@font@weight,
+                                titlepage/examination committee/reviewers/descriptor/font/color/.initial = black,
+                        titlepage/examination committee/reviewers/names/.is setter,
+                            titlepage/examination committee/reviewers/names/font/.is setter,
+                                titlepage/examination committee/reviewers/names/font/family/.initial = \normalfont,
+                                titlepage/examination committee/reviewers/names/font/size/.initial = \normalsize,
+                                titlepage/examination committee/reviewers/names/font/weight/.store in = \@mt@titlepage@examinationCommittee@reviewers@names@font@weight,
+                                titlepage/examination committee/reviewers/names/font/color/.initial = black,
+                    titlepage/examination committee/additional examiner/.is setter,
+                        titlepage/examination committee/additional examiner/descriptor/.is setter,
+                            titlepage/examination committee/additional examiner/descriptor/text/.initial = {Additional Examiner:},
+                            titlepage/examination committee/additional examiner/descriptor/font/.is setter,
+                                titlepage/examination committee/additional examiner/descriptor/font/family/.initial = \normalfont,
+                                titlepage/examination committee/additional examiner/descriptor/font/size/.initial = \normalsize,
+                                titlepage/examination committee/additional examiner/descriptor/font/weight/.store in = \@mt@titlepage@examinationCommittee@additionalExaminer@descriptor@font@weight,
+                                titlepage/examination committee/additional examiner/descriptor/font/color/.initial = black,
+                        titlepage/examination comittee/additional examiner/name/.is setter,  
+                            titlepage/examination committee/additional examiner/name/font/.is setter,
+                                titlepage/examination committee/additional examiner/name/font/family/.initial = \normalfont,
+                                titlepage/examination committee/additional examiner/name/font/size/.initial = \normalsize,
+                                titlepage/examination committee/additional examiner/name/font/weight/.store in = \@mt@titlepage@examinationCommittee@additionalExaminer@name@font@weight,
+                                titlepage/examination committee/additional examiner/name/font/color/.initial = black,
+                titlepage/examination committee/title/@formated/.initial = {%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/title/font/family}%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/title/font/size}%
+                    \@mt@titlepage@examinationCommittee@title@font@weight%
+                    \color{\pgfkeysvalueof{/mt/titlepage/examination committee/title/font/color}}%
+                    \pgfkeysvalueof{/mt/titlepage/examination committee/title/text}%
+                },%
+        debug/.is setter,
+            debug/show margins/.initial = false
+    }
+
+    % \newcommand*\@mt@pgfkeys@setup@TEMPLATE[2]{\pgfqkeys{#1}{#2}}
+    \newcommand*\mtSetupComplete[1]{\pgfqkeys{/mt}{#1}}%\@mt@pgfkeys@setup@TEMPLATE{/mt}{#1}} %\pgfqkeys{/mt}{#1}
+\makeatother

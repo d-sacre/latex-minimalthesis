@@ -1,0 +1,96 @@
+\documentclass{./class/minimalthesis}
+
+% In General: Any setting not needed can be omitted. In this case, it will not be typeset.
+\mtSetupComplete{
+	thesis = {
+		title = minimalthesis,
+		subtitle = {Minimal-Working-Example (v0.0.2-alpha-2)}, % remove if not needed
+		type = Dissertation,
+		author = {
+			name = Max Mustermann,
+			place of birth = Munich,
+			% if only one affiliation:
+%			affiliation = {University of Beteigeuze, Institute for Experimental Physics, Nanolab},
+			% if multiple affiliations:
+			affiliations = {%
+				{University of Beteigeuze, Institute for Experimental Physics, Nanolab},%
+				{University of Jupiter, Institute for Chemistry, Synthesis Lab}
+			}
+		},
+		examiners = {
+			chairman = Prof. Habakuk Tibatong,
+			reviewers = {Prof. Hans Bartolomä, Prof. Louis Murphy},
+			additional = Prof. Stefan Boltzmann
+		}
+	},
+	visual styling = {
+		default font = sans-serif, % other option: serif
+		color scheme = {
+			type = fancy-colorful, % other options: plain, fancy-grayscale
+			% To change colors: Chose the color (available: primary, secondary, tertiary). 
+			% Than either (e.g. in the case of "primary")
+			% colors/accent/primary/set = <LaTeX COLOR NAME OR MIX> (e.g. red, or red!50!blue)
+			% color scheme/colors/accent/primary/define = {color model = HTML, color value = f0f0f0}
+		},
+		% To change the coloring of the float captions
+		caption/propagate color scheme = true % other option: false
+	},
+	modules = {mathematics, physics, chemistry, coding, data visualization},
+	bibliography = {
+		file path = ./example-bibliograhy_biber.bib
+	},
+	pdfmetadata = {
+		subject = {A "Minimal Working Example" for the "minimalthesis" LaTeX Documentclass, Version 0.0.2-alpha-2.},
+		keywords = {academic-thesis, template, latex, documentclass, minimalthesis, v0.0.2-alpha-2, minimal-working-example}
+	},
+	titlepage = {
+		logo = {
+			object type = image,
+			file path = ./class/img/minimalthesis_logo.pdf,
+			height = 8 cm
+		},
+		author affiliations = {%
+			listing style = {%
+				alignment = rows % other option: cols
+			}
+		}
+	},
+%	debug/show margins=true % helpful to find overfull boxes
+}
+
+\begin{document}
+	\mtGenerateTitlepage
+	\mtGenerateTOC
+	
+	\chapter{Tests}
+		\section{Citations}
+			\verb|minimalthesis| provides the \verb|@arxiv| \cite{arxivExample} and \verb|@thesis| \cite{thesisExample} bibliography drivers, so that Arxiv preprints and theses can be cited properly without any manual adjustments by the user.
+			
+		\section{Floats}
+			\begin{figure}[h!]
+				\centering
+				\includegraphics[]{./class/img/minimalthesis_logo.pdf}
+				\caption{Inclusion of the minimalthesis logo, to check the functionality of float environments.}
+			\end{figure}
+		
+		\newpage
+		\section{Science}	
+			\subsection{Mathematics}
+				Examples for equations with many derivatives and integrals.
+				\begin{align*}{c}
+					\pdv{f}{x}, \quad \odv{Q}{t}=\odv{s}{t}, \quad \pdv{f}{x,y}, \quad 
+					\derivset{\odv}[switch-*=false] \odv{y}{x}, \quad \odv[order=n]{y}{x}, \quad
+					\derivset{\odv}[] \odv*{\odv{y}{x}}{x}, \quad 
+					\derivset{\pdv}[sort-method={sign,symbol,abs}] \pdv[order={c+kn,-b+2a}]{f}{x,y}
+				\end{align*}
+				And a simple integral.
+				\begin{align*}
+					T = \int_{0}^{\infty}t\dd{t}, \quad V = \int_{a}^{b} r \dd[3]{r} = \int_{a}^{b} r \odif{x,y,z}
+				\end{align*}
+				
+			\subsection{Chemistry}
+				\ce{Fe^{II}Fe^{III}2O4}\\
+				\ce{CO2 + C -> 2 CO}
+	
+	\mtGenerateBibliography
+\end{document}
