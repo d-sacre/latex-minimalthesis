@@ -2,9 +2,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% start of file `./class/minimalthesis.cls'.                        %%
 %%                                                                   %%
-%% version: v0.0.2-alpha-2                                           %%
+%% version: v0.0.2-alpha3                                            %%
 %% status: alpha                                                     %%
-%% file version: 2023-11-22                                          %%
+%% file version: 2023-12-18                                          %%
 %%                                                                   %%
 %% Copyright 2023 Daniel Sacré.                                      %%
 %%                                                                   %%    
@@ -23,9 +23,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \setcounter{errorcontextlines}{100}
 \NeedsTeXFormat{LaTeX2e}[2020-02-02] % should be set to the minimal version required, in this case 2020
-\ProvidesClass{./class/minimalthesis}[2023-11-22 v0.0.2-alpha-2 Daniel Sacré LaTeX Project Public License version 1.3c]
+\ProvidesClass{./class/minimalthesis}[2023-12-18 v0.0.2-alpha3 Daniel Sacré LaTeX Project Public License version 1.3c]
 
 \DeclareOption*{\OptionNotUsed}
 \ProcessOptions\relax
@@ -56,6 +55,48 @@
 
 % load pgfkeys setup
 \input{./class/pgfkeys/minimalthesis_pgfkeys.setup}
+
+% initialize pgfkeys with user input and set bibliography
+% REMARK: A little hacky and unlogic to set the bibliography inside this command.
+% However, the bibliography has to be intitialized AFTER the user input. To ensure this,
+% it was tried to set it up in \AtEndOfPreamble, which is not allowed due to biblatex having some 
+% logic in the same hook, which collides with setting it up. 
+\newcommand*\mtSetupComplete[1]{%
+    \pgfqkeys{/mt}{#1}
+    % adding the bibliography file
+    \ifthenelse{%
+        \equal{\pgfkeysvalueof{/mt/bibliography/file path}}{}%
+    }{%
+        % no bibliography file specified
+        % nothing to do
+    }{%
+        % default: numeric citation
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/bibliography/style/citing}}{numeric}}{
+            \RequirePackage[
+                backend=biber,
+                style=chem-angew,% not possible to be set AFTER package is loaded
+                articletitle,
+                sorting=none,
+                natbib=true,
+                url=false,
+                doi=true,
+                eprint=true,
+                maxbibnames=99,
+            ]{biblatex}
+            \input{./class/bib/minimal-thesis_formatting-bib-entries.tex}
+            \ExecuteBibliographyOptions{thesistitle}
+            
+        }{}
+
+        % author year citation
+        \ifthenelse{\equal{\pgfkeysvalueof{/mt/bibliography/style/citing}}{author year}}{
+            \RequirePackage[authordate, maxbibnames=99999, maxcitenames=\pgfkeysvalueof{/mt/bibliography/style/maxcitenames}]{biblatex-chicago}
+        }{}
+
+        \addbibresource{\pgfkeysvalueof{/mt/bibliography/file path}}
+    }
+}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage[english]{babel}% language set-up
@@ -129,23 +170,6 @@
 \RequirePackage{multicol}
 \RequirePackage{booktabs,colortbl,array}
 
-% Bibliography
-% REMARK: Can neither be set in \AtEndPreamble, nor \AddToHook{begindocument/before}{...};
-% See: https://github.com/plk/biblatex/issues/1107
-\RequirePackage[
-    backend=biber,
-    style=chem-angew,% not possible to be set AFTER package is loaded
-    articletitle,
-    % sortlocale=de_DE,
-    % style=apsrev4-1,
-    sorting=none,
-    natbib=true,
-    url=false,
-    doi=true,
-    eprint=true,
-    maxbibnames=99,
-]{biblatex}
-
 \RequirePackage[hidelinks]{hyperref}
 
 % packages related to math
@@ -173,17 +197,17 @@
         }
         \RequirePackage{geometry}
 
-    % adding the bibliography file
-    \ifthenelse{%
-        \equal{\pgfkeysvalueof{/mt/bibliography/file path}}{}%
-    }{%
-        % no bibliography file specified
-        % nothing to do
-    }{%
-        \input{./class/bib/minimal-thesis_formatting-bib-entries.tex}
-        \ExecuteBibliographyOptions{thesistitle}
-        \addbibresource{\pgfkeysvalueof{/mt/bibliography/file path}}
-    }
+    % % adding the bibliography file
+    % \ifthenelse{%
+    %     \equal{\pgfkeysvalueof{/mt/bibliography/file path}}{}%
+    % }{%
+    %     % no bibliography file specified
+    %     % nothing to do
+    % }{%
+    %     % \input{./class/bib/minimal-thesis_formatting-bib-entries.tex}
+    %     % \ExecuteBibliographyOptions{thesistitle}
+    %     % \addbibresource{\pgfkeysvalueof{/mt/bibliography/file path}}
+    % }
 
     % setting the default font of the document
     \ifthenelse{%

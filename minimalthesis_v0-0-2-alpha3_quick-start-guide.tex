@@ -2,34 +2,14 @@
 
 \usepackage{blindtext}
 
-% sans serif
-% \usepackage{tgtermes}
-% \renewcommand*\familydefault{\sfdefault}
-% fira sans + newtxsf for math
-%	\usepackage[sfdefault]{FiraSans} %% option 'sfdefault' activates Fira Sans as the default text font
-%	\usepackage{newtxsf}
-
-%
-%\usepackage{cmbright} % better math
-
-% broken ttfamily/verb, but math looks good
-%	\usepackage{libertine}
-%	\usepackage{libertinust1math} 
-
-% looks good with math
-%	\usepackage[sc]{mathpazo}
-%	\linespread{1.05} 
-
-% favorite for sans serif
-% math + text looks good, but issue with ttfamily/verb
-%\usepackage{newtxtext}
-%\usepackage[uprightGreek]{newtxmath} % verify wether uprightGreek option is necessary
-%\renewcommand*\familydefault{\sfdefault}
 
 \usepackage{pagecolor}
+\usepackage{listings}
+
+\lstset{basicstyle=\footnotesize}
 
  
-\def\releaseVersion{0.0.2-alpha-2}
+\def\releaseVersion{0.0.2-alpha3}
 
 
 \mtSetupComplete{
@@ -67,8 +47,7 @@
 }
 
 \begin{document}
-%	\mtGenerateTitlepage
-	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_custom-cover.tex}
+	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha3_qsg_custom-cover.tex}
 
 	\mtGenerateTOC
 	
@@ -84,10 +63,10 @@
 			\end{itemize}
 			
 	
-	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_chapter_general.tex}
-	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_chapter_bibliography.tex}
-	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_chapter_science.tex}
-	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha-1_qsg_chapter_changelog.tex}
+	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha3_qsg_chapter_general.tex}
+	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha3_qsg_chapter_bibliography.tex}
+	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha3_qsg_chapter_science.tex}
+	\input{./quick-start-guide_content/minimalthesis_v0-0-2-alpha3_qsg_chapter_changelog.tex}
 	
 	\mtGenerateBibliography
 \end{document}

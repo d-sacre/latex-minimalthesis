@@ -4,7 +4,7 @@
 \mtSetupComplete{
 	thesis = {
 		title = minimalthesis,
-		subtitle = {Minimal-Working-Example (v0.0.2-alpha-2)}, % remove if not needed
+		subtitle = {Minimal-Working-Example (v0.0.2-alpha3)}, % remove if not needed
 		type = Dissertation,
 		author = {
 			name = Max Mustermann,
@@ -37,11 +37,14 @@
 	},
 	modules = {mathematics, physics, chemistry, coding, data visualization},
 	bibliography = {
-		file path = ./example-bibliograhy_biber.bib
+		style = {
+			citing = numeric % available options: numeric, author year
+		},
+		file path = ./example-bibliograhy_biber_author-year.bib
 	},
 	pdfmetadata = {
 		subject = {A "Minimal Working Example" for the "minimalthesis" LaTeX Documentclass, Version 0.0.2-alpha-2.},
-		keywords = {academic-thesis, template, latex, documentclass, minimalthesis, v0.0.2-alpha-2, minimal-working-example}
+		keywords = {academic-thesis, template, latex, documentclass, minimalthesis, v0.0.2-alpha3, minimal-working-example}
 	},
 	titlepage = {
 		logo = {
@@ -64,7 +67,12 @@
 	
 	\chapter{Tests}
 		\section{Citations}
-			\verb|minimalthesis| provides the \verb|@arxiv| \cite{arxivExample} and \verb|@thesis| \cite{thesisExample} bibliography drivers, so that Arxiv preprints and theses can be cited properly without any manual adjustments by the user.
+			\ifthenelse{\equal{\pgfkeysvalueof{/mt/bibliography/style/citing}}{author year}}{
+				The author year citation works: \cite{testOneAuthor} and \cite{testTwoAuthors} and \cite{testThreeAuthors} and \cite{testTwoAuthorsSameYear}. Of course it still has its inherent issues as illustrated above, which is why it should not be used for natural science publications and theses.
+			}{
+				% maxcitenames only works if last name is abbreviated!
+				The numeric citation works: \cite{testOneAuthor} and \cite{testTwoAuthors} and \cite{testThreeAuthors} and \cite{testTwoAuthorsSameYear}.
+			}
 			
 		\section{Floats}
 			\begin{figure}[h!]

@@ -2,9 +2,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% start of file `./class/pgfkeys/minimalthesis_pgfkeys.setup'.      %%
 %%                                                                   %%
-%% version: v0.0.2-alpha-2                                           %%
+%% version: v0.0.2-alpha3                                           %%
 %% status: alpha                                                     %%
-%% file version: 2023-11-22                                          %%
+%% file version: 2023-12-18                                          %%
 %%                                                                   %%
 %% Copyright 2023 Daniel Sacré.                                      %%
 %%                                                                   %%    
@@ -116,6 +116,9 @@
                 @modules/@data visualization/@load/.initial = false,
                 @modules/@data visualization/@packages/.initial = {},
         bibliography/.is setter,
+            bibliography/style/.is setter,
+                bibliography/style/citing/.initial = numeric,
+                bibliography/style/maxcitenames/.initial = 1,
             bibliography/file path/.initial,
         academic degree identifiers/.is setter,
             academic degree identifiers/bachelor/.initial = {Bachelor of Science (B.Sc.)},
@@ -326,6 +329,4 @@
             debug/show margins/.initial = false
     }
 
-    % \newcommand*\@mt@pgfkeys@setup@TEMPLATE[2]{\pgfqkeys{#1}{#2}}
-    \newcommand*\mtSetupComplete[1]{\pgfqkeys{/mt}{#1}}%\@mt@pgfkeys@setup@TEMPLATE{/mt}{#1}} %\pgfqkeys{/mt}{#1}
 \makeatother
